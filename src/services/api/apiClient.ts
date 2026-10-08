@@ -1,6 +1,6 @@
 "use client";
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+export const API_BASE_URL = "https://api.bimbuildbd.com";
 
 export interface ApiResponse<T = unknown> {
   statusCode: number;
@@ -66,8 +66,8 @@ export async function apiFetch<T>(
         ? "data" in json
           ? json.data
           : "user" in json
-          ? json.user
-          : json
+            ? json.user
+            : json
         : json;
 
     return {
