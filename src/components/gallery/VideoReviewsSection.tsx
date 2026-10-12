@@ -3,7 +3,8 @@
 import React from "react";
 import { Play } from "lucide-react";
 
-interface VideoReview {
+export interface VideoReview {
+  id?: string;
   title: string;
   author: string;
   image: string;
@@ -15,14 +16,19 @@ interface VideoReviewsSectionProps {
   onPlayVideo: (url: string) => void;
 }
 
-export default function VideoReviewsSection({ videos, onPlayVideo }: VideoReviewsSectionProps) {
+export default function VideoReviewsSection({
+  videos,
+  onPlayVideo,
+}: VideoReviewsSectionProps) {
+  if (!videos || videos.length === 0) return null;
+
   return (
-    <div className="space-y-10 pt-6">
+    <div className="space-y-8 pt-6">
       <div className="text-left">
         <h2 className="text-xl sm:text-2xl font-black text-[#002b5b] tracking-tight">
           Video{" "}
           <span className="relative inline-block">
-            <span className="text-[#0f4c81]">Gallery</span>
+            <span className="text-[#0f4c81]">Reviews</span>
             <svg
               className="w-full h-3 text-[#0077b6] absolute -bottom-1.5 left-0"
               viewBox="0 0 100 12"
@@ -43,16 +49,19 @@ export default function VideoReviewsSection({ videos, onPlayVideo }: VideoReview
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {videos.map((video, index) => (
           <div
-            key={index}
-            className="group bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col cursor-pointer"
+            key={video.id || index}
+            className="group bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-xs hover:shadow-xl hover:border-sky-300 transition-all duration-300 flex flex-col cursor-pointer hover:-translate-y-1"
             onClick={() => onPlayVideo(video.url)}
           >
             <div className="relative aspect-[16/10] w-full bg-slate-900 overflow-hidden">
               <img
-                src={video.image}
+                src={video.image || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80"}
                 alt={video.title}
                 loading="lazy"
-                decoding="async"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src =
+                    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80";
+                }}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-80"
               />
               <div className="absolute inset-0 flex items-center justify-center">

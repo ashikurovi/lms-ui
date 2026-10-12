@@ -1,58 +1,62 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Calendar } from "lucide-react";
+import { Calendar, Loader2, BookOpen, ArrowRight } from "lucide-react";
+import { blogsApi, BlogItem } from "@/services/api";
+
+function getExcerpt(content?: string, length = 135): string {
+  if (!content) return "";
+  const plain = content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  return plain.length > length ? plain.slice(0, length) + "..." : plain;
+}
+
+function formatDate(dateStr?: string): string {
+  if (!dateStr) return "Recently Published";
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  } catch {
+    return dateStr;
+  }
+}
 
 export default function BlogsPage() {
-  const blogs = [
-    {
-      id: "bim-lod-complete-guide",
-      category: "BIM LOD",
-      date: "November 30, 2025",
-      title: "BIM LOD (Level of Development) — Complete Guide (LOD 100–500)",
-      excerpt: "A comprehensive practical guide to understanding BIM LOD frameworks, detailing standards, and industry requirements from schematic design to construction handover...",
-      image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: "bim-dimensions-1d-7d",
-      category: "BIM DIMENSIONS",
-      date: "November 30, 2025",
-      title: "BIM Dimensions (1D-7D) Explained: How 7D BIM Transforms Construction",
-      excerpt: "Building Information Modeling is a comprehensive lifecycle methodology. Learn how 3D modeling, 4D scheduling, 5D cost tracking, 6D sustainability, and 7D facility management operate together...",
-      image: "https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: "clash-detection-bim",
-      category: "CLASH DETECTION",
-      date: "November 30, 2025",
-      title: "Clash Detection in BIM: Comprehensive Guide (What, Why & How)",
-      excerpt: "Clash detection in Navisworks and Revit is an essential coordination process that detects architectural, structural, and MEP interference before on-site fabrication...",
-      image: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      id: "bim-build-bd-intro",
-      category: "INSTITUTE",
-      date: "November 4, 2025",
-      title: "BIM Build BD: Pioneering Technical AEC Education in Bangladesh",
-      excerpt: "Empowering engineers and architects with hands-on BIM modeling, automation workflows, and global career opportunities...",
-      image: "",
-      hasImage: false,
-    },
-    {
-      id: "bim-smart-construction-future",
-      category: "BIM",
-      date: "October 6, 2025",
-      title: "BIM: The Era of Smart Digital Construction & Parametric Modeling",
-      excerpt: "Discover how intelligent digital twins and computational BIM workflows are reducing costs, eliminating rework, and accelerating project timelines...",
-      image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80",
-      hasImage: true,
-    },
-  ];
+  const [blogs, setBlogs] = useState<BlogItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      setLoading(true);
+      try {
+        const res = await blogsApi.getAllBlogs();
+        if ((res.statusCode === 200 || res.statusCode === 201) && res.data) {
+          const items = Array.isArray(res.data)
+            ? res.data
+            : ((res.data as unknown as { items?: BlogItem[] })?.items || []);
+          setBlogs(items);
+        } else {
+          setBlogs([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch blogs:", err);
+        setBlogs([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
 
   return (
     <div className="bg-white min-h-screen py-8 sm:py-12">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 space-y-8">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 space-y-8 sm:space-y-10">
         {/* Breadcrumb */}
         <div className="text-xs sm:text-sm text-slate-400 font-medium">
           <Link href="/" className="hover:text-slate-600 transition-colors">
@@ -63,65 +67,130 @@ export default function BlogsPage() {
         </div>
 
         {/* Page Title */}
-        <div className="text-center pt-2 pb-6">
+        <div className="text-center pt-2 pb-4">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#002b5b] tracking-tight">
             Engineering & BIM Blogs
           </h1>
-          <p className="text-sm text-slate-500 mt-2">Latest industry insights, technical guides, and BIM tutorials</p>
+          <p className="text-sm sm:text-base text-slate-500 font-medium mt-2 max-w-2xl mx-auto">
+            Latest industry insights, technical guides, AEC best practices, and BIM tutorials
+          </p>
         </div>
+
+        {/* Loading State */}
+        {loading && (
+          <div className="space-y-8">
+            <div className="flex items-center justify-center py-10 gap-3 text-slate-400">
+              <Loader2 className="w-6 h-6 animate-spin text-[#0077b6]" />
+              <span className="text-sm font-medium">Loading articles...</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {[1, 2, 3].map((n) => (
+                <div
+                  key={n}
+                  className="bg-white rounded-2xl border border-slate-200/80 p-5 space-y-4 animate-pulse"
+                >
+                  <div className="w-full h-48 bg-slate-200 rounded-xl" />
+                  <div className="w-20 h-4 bg-slate-200 rounded-md" />
+                  <div className="w-3/4 h-5 bg-slate-200 rounded-md" />
+                  <div className="w-full h-12 bg-slate-100 rounded-md" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && blogs.length === 0 && (
+          <div className="py-20 text-center max-w-md mx-auto space-y-4">
+            <div className="w-16 h-16 rounded-2xl bg-sky-50 text-[#0077b6] flex items-center justify-center mx-auto">
+              <BookOpen className="w-8 h-8" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-800">
+              No Blog Articles Found
+            </h3>
+            <p className="text-sm text-slate-500">
+              Technical articles and guides are being prepared. Please check back soon or browse our available courses.
+            </p>
+            <div className="pt-2">
+              <Link
+                href="/courses"
+                className="inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-[#0077b6] hover:bg-[#005f92] text-white text-xs font-bold transition-colors"
+              >
+                Explore Courses
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* Blog Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-          {blogs.map((blog) => (
-            <div
-              key={blog.id}
-              className="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1.5"
-            >
-              <div>
-                {/* Image (if present) */}
-                {blog.image && (
-                  <div className="relative h-56 sm:h-60 w-full bg-slate-900 overflow-hidden">
-                    <img
-                      src={blog.image}
-                      alt={blog.title}
-                      loading="lazy"
-                      decoding="async"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
-                    />
+        {!loading && blogs.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {blogs.map((blog) => {
+              const category = (blog as unknown as { category?: string }).category || "Engineering";
+              const excerpt = getExcerpt(blog.content);
+
+              return (
+                <Link
+                  key={blog.id}
+                  href={`/blog/${blog.id}`}
+                  className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-xl hover:border-sky-300 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1.5 cursor-pointer"
+                >
+                  <div>
+                    {/* Image */}
+                    <div className="relative h-52 sm:h-56 w-full bg-slate-900 overflow-hidden">
+                      <img
+                        src={
+                          blog.image ||
+                          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+                        }
+                        alt={blog.title}
+                        loading="lazy"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80";
+                        }}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95"
+                      />
+                      <div className="absolute top-3 left-3">
+                        <span className="px-3 py-1 rounded-lg bg-white/95 backdrop-blur-md text-[#0077b6] font-bold text-[11px] tracking-wider uppercase shadow-xs">
+                          {category}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Card Content */}
+                    <div className="p-5 sm:p-6 space-y-3">
+                      <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+                        <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                        <span>{formatDate(blog.createdAt || blog.updatedAt)}</span>
+                      </div>
+
+                      <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug group-hover:text-[#0077b6] transition-colors line-clamp-2">
+                        {blog.title}
+                      </h3>
+
+                      {excerpt && (
+                        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-3">
+                          {excerpt}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                )}
 
-                {/* Card Content */}
-                <div className="p-6 sm:p-7 space-y-3">
-                  <div className="text-xs font-black uppercase tracking-wider text-[#0077b6]">
-                    {blog.category}
+                  {/* Bottom Read More CTA */}
+                  <div className="px-5 pb-5 pt-2 border-t border-slate-100 flex items-center justify-between">
+                    <span className="text-xs sm:text-sm font-bold text-[#0077b6] group-hover:text-[#002b5b] transition-colors">
+                      Read Article
+                    </span>
+                    <div className="w-8 h-8 rounded-xl bg-sky-50 text-[#0077b6] group-hover:bg-[#0077b6] group-hover:text-white flex items-center justify-center transition-all duration-200 shadow-xs">
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                    </div>
                   </div>
-
-                  <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                    <span>{blog.date}</span>
-                  </div>
-
-                  <h3 className="text-base sm:text-lg font-extrabold text-slate-900 leading-snug group-hover:text-[#0077b6] transition-colors">
-                    {blog.title}
-                  </h3>
-
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-3">
-                    {blog.excerpt}
-                  </p>
-                </div>
-              </div>
-
-              {/* Bottom Read More Link */}
-              <div className="px-6 pb-6 pt-2">
-                <button className="text-xs sm:text-sm font-extrabold text-[#0077b6] group-hover:text-[#002b5b] transition-colors inline-flex items-center gap-1">
-                  <span>Read Article</span>
-                  <span>→</span>
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

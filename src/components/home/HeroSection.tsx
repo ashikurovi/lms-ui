@@ -2,9 +2,9 @@
 
 import React from "react";
 import Link from "next/link";
-import { GraduationCap, CheckSquare } from "lucide-react";
-import HeroSoftwareLogos from "./HeroSoftwareLogos";
+import { GraduationCap, CheckSquare, ArrowRight } from "lucide-react";
 import HeroShowcaseCard from "./HeroShowcaseCard";
+import ScrollReveal from "@/components/common/ScrollReveal";
 
 export default function HeroSection() {
   return (
@@ -29,90 +29,93 @@ export default function HeroSection() {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 relative z-10 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           
-          {/* Left Column: Headlines, Checkmarks, Buttons, Software Logos */}
+          {/* Left Column: Headlines, Checkmarks, Buttons */}
           <div className="lg:col-span-6 space-y-6 sm:space-y-7">
             {/* Main Headline with Locked Elements */}
-            <div className="space-y-1">
-              {/* Row 1: Learn BIM (with cap perched exactly on I) */}
-              <div className="flex items-center gap-3">
-                <span className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-[#002b5b] tracking-tight leading-none">
-                  Learn
-                </span>
-                <span className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-[#0077b6] tracking-tight leading-none relative inline-flex items-center">
-                  B
-                  <span className="relative inline-flex items-center">
-                    I
-                    <GraduationCap className="w-6 h-6 sm:w-8 sm:h-8 lg:w-9 lg:h-9 text-[#002b5b] absolute -top-5 sm:-top-7 left-1/2 -translate-y-1/2" />
+            <ScrollReveal direction="up" delay={50} duration={600}>
+              <div className="space-y-1">
+                {/* Row 1: Learn BIM (with cap perched exactly on I) */}
+                <div className="flex items-center gap-3">
+                  <span className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-[#002b5b] tracking-tight leading-none">
+                    Learn
                   </span>
-                  M
-                </span>
-              </div>
+                  <span className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-[#0077b6] tracking-tight leading-none relative inline-flex items-center">
+                    B
+                    <span className="relative inline-flex items-center">
+                      I
+                      <GraduationCap className="w-6 h-6 sm:w-8 sm:h-8 lg:w-9 lg:h-9 text-[#002b5b] absolute -top-5 sm:-top-7 left-1/2 -translate-y-1/2" />
+                    </span>
+                    M
+                  </span>
+                </div>
 
-              {/* Row 2: Build Your Career */}
-              <div className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-[#002b5b] tracking-tight leading-tight">
-                <span>Build Your </span>
-                <span className="relative inline-block">
-                  <span className="text-[#0f4c81]">Career</span>
-                  <svg
-                    className="w-full h-3 sm:h-4 text-[#0077b6] absolute -bottom-2 sm:-bottom-2.5 left-0"
-                    viewBox="0 0 160 14"
-                    fill="none"
-                    preserveAspectRatio="none"
-                  >
-                    <path
-                      d="M3 10C45 2 115 2 157 11"
-                      stroke="#0077b6"
-                      strokeWidth="3.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </span>
+                {/* Row 2: Build Your Career */}
+                <div className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-[#002b5b] tracking-tight leading-tight">
+                  <span>Build Your </span>
+                  <span className="relative inline-block">
+                    <span className="text-[#0f4c81]">Career</span>
+                    <svg
+                      className="w-full h-3 sm:h-4 text-[#0077b6] absolute -bottom-2 sm:-bottom-2.5 left-0"
+                      viewBox="0 0 160 14"
+                      fill="none"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M3 10C45 2 115 2 157 11"
+                        stroke="#0077b6"
+                        strokeWidth="3.5"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </span>
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
 
             {/* 3 Checkmark Bullet Points */}
-            <div className="space-y-3 pt-1 text-sm sm:text-base font-semibold text-slate-700">
-              <div className="flex items-center gap-3">
-                <CheckSquare className="w-5 h-5 text-[#0077b6] shrink-0" />
-                <span>Revit Architecture | Structure | MEP</span>
+            <ScrollReveal direction="up" delay={150} duration={600}>
+              <div className="space-y-3 pt-1 text-sm sm:text-base font-semibold text-slate-700">
+                <div className="flex items-center gap-3">
+                  <CheckSquare className="w-5 h-5 text-[#0077b6] shrink-0" />
+                  <span>Revit Architecture | Structure | MEP</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckSquare className="w-5 h-5 text-[#0077b6] shrink-0" />
+                  <span>Project-Based Training</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckSquare className="w-5 h-5 text-[#0077b6] shrink-0" />
+                  <span>Freelancing & Job Placement Support</span>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <CheckSquare className="w-5 h-5 text-[#0077b6] shrink-0" />
-                <span>Project-Based Training</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <CheckSquare className="w-5 h-5 text-[#0077b6] shrink-0" />
-                <span>Freelancing & Job Placement Support</span>
-              </div>
-            </div>
+            </ScrollReveal>
 
-            {/* CTA Buttons */}
-            <div className="space-y-3 pt-1">
-              <div>
+            {/* Modern Clean CTA Buttons */}
+            <ScrollReveal direction="up" delay={250} duration={600}>
+              <div className="flex flex-wrap items-center gap-3.5 pt-1">
                 <Link
                   href="/courses"
-                  className="inline-block px-8 py-3.5 rounded-xl bg-[#0077b6] hover:bg-[#005a8c] text-white font-bold text-sm sm:text-base lg:text-lg shadow-lg shadow-blue-500/20 transition-all hover:scale-105 active:scale-95"
+                  className="group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-xl bg-[#0077b6] hover:bg-[#005a8c] text-white font-bold text-sm sm:text-base shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200"
                 >
-                  Join Our Live Courses!
+                  <span>Join Our Live Courses!</span>
+                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </Link>
-              </div>
 
-              <div>
                 <Link
                   href="/courses"
-                  className="inline-block px-9 py-3 rounded-xl bg-[#002b5b] hover:bg-[#001a38] text-white font-bold text-xs sm:text-sm lg:text-base transition-all shadow-md hover:scale-105 active:scale-95"
+                  className="inline-flex items-center px-7 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-[#002b5b] border border-slate-200 hover:border-slate-300 font-bold text-sm sm:text-base shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200"
                 >
                   Admission
                 </Link>
               </div>
-            </div>
+            </ScrollReveal>
 
-            {/* Software Logos 2-Row Grid */}
-            <HeroSoftwareLogos />
           </div>
 
           {/* Right Column: Visual Showcase Card */}
-          <HeroShowcaseCard />
+          <ScrollReveal direction="left" delay={200} duration={700} className="lg:col-span-6 flex justify-center lg:justify-end">
+            <HeroShowcaseCard />
+          </ScrollReveal>
 
         </div>
       </div>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import CourseCard, { CourseCardItem } from "../courses/CourseCard";
+import ScrollReveal from "@/components/common/ScrollReveal";
 
 export default function FeaturedCourses() {
   const [courses, setCourses] = useState<CourseCardItem[]>([]);
@@ -82,20 +83,20 @@ export default function FeaturedCourses() {
         }`}
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
-        <div className="text-center">
+        <ScrollReveal direction="up" duration={500} className="text-center">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#002b5b] tracking-tight">
             Explore All Batches
           </h2>
-        </div>
+        </ScrollReveal>
 
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 mt-10 sm:mt-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mt-10 sm:mt-12">
             {[1, 2, 3].map((n) => (
               <div
                 key={n}
-                className="rounded-3xl border border-slate-200 bg-white p-6 space-y-4 animate-pulse"
+                className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4 animate-pulse"
               >
-                <div className="h-52 bg-slate-200 rounded-2xl w-full" />
+                <div className="h-48 bg-slate-200 rounded-xl w-full" />
                 <div className="h-4 bg-slate-200 rounded w-1/3" />
                 <div className="h-6 bg-slate-200 rounded w-4/5" />
                 <div className="h-8 bg-slate-200 rounded w-full" />
@@ -103,9 +104,16 @@ export default function FeaturedCourses() {
             ))}
           </div>
         ) : courses.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 mt-10 sm:mt-12">
-            {courses.map((course) => (
-              <CourseCard key={course.id} course={course} />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mt-10 sm:mt-12">
+            {courses.map((course, idx) => (
+              <ScrollReveal
+                key={course.id}
+                direction="up"
+                delay={(idx % 3) * 100}
+                duration={550}
+              >
+                <CourseCard course={course} />
+              </ScrollReveal>
             ))}
           </div>
         ) : null}

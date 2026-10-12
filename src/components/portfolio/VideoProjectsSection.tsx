@@ -3,10 +3,11 @@
 import React from "react";
 import { Play } from "lucide-react";
 
-interface VideoProject {
+export interface VideoProject {
+  id?: string;
   title: string;
-  subtitle: string;
-  image: string;
+  subtitle?: string;
+  image?: string;
   url: string;
 }
 
@@ -19,8 +20,10 @@ export default function VideoProjectsSection({
   videos,
   onPlayVideo,
 }: VideoProjectsSectionProps) {
+  if (!videos || videos.length === 0) return null;
+
   return (
-    <div className="space-y-10 pt-8 border-t border-slate-100">
+    <div className="space-y-8 pt-6">
       <div className="text-left">
         <h2 className="text-xl sm:text-2xl font-black text-[#002b5b] tracking-tight">
           Video{" "}
@@ -46,14 +49,19 @@ export default function VideoProjectsSection({
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {videos.map((video, index) => (
           <div
-            key={index}
-            className="group bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col cursor-pointer"
+            key={video.id || index}
+            className="group bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-xs hover:shadow-xl hover:border-sky-300 transition-all duration-300 flex flex-col cursor-pointer hover:-translate-y-1"
             onClick={() => onPlayVideo(video.url)}
           >
             <div className="relative aspect-[16/10] w-full bg-slate-900 overflow-hidden">
               <img
-                src={video.image}
+                src={video.image || "https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=600&q=80"}
                 alt={video.title}
+                loading="lazy"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src =
+                    "https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=600&q=80";
+                }}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-80"
               />
               <div className="absolute inset-0 flex items-center justify-center">
@@ -67,9 +75,11 @@ export default function VideoProjectsSection({
               <h3 className="text-sm font-black text-[#0f172a] group-hover:text-[#0077b6] transition-colors line-clamp-2">
                 {video.title}
               </h3>
-              <p className="text-xs text-slate-400 font-medium">
-                {video.subtitle}
-              </p>
+              {video.subtitle && (
+                <p className="text-xs text-slate-400 font-medium">
+                  {video.subtitle}
+                </p>
+              )}
             </div>
           </div>
         ))}

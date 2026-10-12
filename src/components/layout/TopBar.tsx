@@ -14,16 +14,7 @@ export default function TopBar() {
   return (
     <div className="bg-[#002b5b] text-white text-xs sm:text-[13px] font-medium border-b border-[#0f4c81]/40">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
-        <div className="flex justify-between items-center h-10">
-          {/* Left: Download App */}
-          <div>
-            <a
-              href="/android_app/abi.apk"
-              className="text-slate-200 hover:text-sky-300 transition-colors flex items-center gap-1.5 font-semibold text-xs sm:text-[13px]"
-            >
-              <span>Download App</span>
-            </a>
-          </div>
+        <div className="flex justify-end items-center h-10">
 
           {/* Right: Admission, Log in, Social Icons */}
           <div className="flex items-center gap-5 sm:gap-8 text-xs sm:text-[13px]">

@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Star, Quote } from "lucide-react";
 import { reviewsApi } from "@/services/api";
+import ScrollReveal from "@/components/common/ScrollReveal";
 
 export default function TestimonialsSection() {
   const testimonials = [
@@ -195,14 +196,14 @@ export default function TestimonialsSection() {
     <section className="py-20 sm:py-24 bg-white font-sans overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 space-y-10 sm:space-y-12">
         {/* Clean Centered Header */}
-        <div className="text-center space-y-2.5">
+        <ScrollReveal direction="up" duration={500} className="text-center space-y-2.5">
           <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#0077b6]">
             TESTIMONIALS
           </span>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#002b5b] tracking-tight">
             What Students Say About Us
           </h2>
-        </div>
+        </ScrollReveal>
 
         {/* Seamless Infinite Sliding Track */}
         <div
@@ -231,7 +232,7 @@ export default function TestimonialsSection() {
                   width: `${100 / visibleCount}%`,
                 }}
               >
-                <div className="relative bg-gradient-to-b from-white to-slate-50/60 rounded-3xl border border-slate-200/90 p-7 sm:p-8 flex flex-col justify-between shadow-xs hover:shadow-xl hover:border-sky-300 transition-all duration-300 group hover:-translate-y-1.5 overflow-hidden h-full min-h-[290px]">
+                <div className="relative bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-7 flex flex-col justify-between shadow-xs hover:shadow-xl hover:border-sky-300 transition-all duration-300 group hover:-translate-y-1.5 overflow-hidden h-full min-h-[280px]">
                   {/* Subtle Decorative Quote Icon */}
                   <Quote className="w-8 h-8 text-sky-100 group-hover:text-sky-200 absolute top-6 right-6 transition-colors pointer-events-none" />
 

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ArrowUpRight } from "lucide-react";
+import ScrollReveal from "@/components/common/ScrollReveal";
 
 export default function CommunityCards() {
   const cards = [
@@ -56,59 +57,66 @@ export default function CommunityCards() {
     <section className="py-20 sm:py-24 bg-[#f8fafc] border-t border-slate-100 font-sans">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 space-y-12">
         {/* Section Header */}
-        <div className="text-center space-y-2">
+        <ScrollReveal direction="up" duration={500} className="text-center space-y-2">
           <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#0077b6]">
             COMMUNITY
           </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#002b5b] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#002b5b] tracking-tight">
             Join Our Learning Community
           </h2>
-        </div>
+        </ScrollReveal>
 
         {/* 3 Redesigned Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {cards.map((c, i) => (
-            <div
+            <ScrollReveal
               key={i}
-              className={`group relative bg-white rounded-3xl p-8 sm:p-9 border border-slate-200/80 ${c.accentBorder} shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between space-y-8 overflow-hidden`}
+              direction="up"
+              delay={i * 120}
+              duration={550}
+              className="h-full"
             >
-              {/* Subtle top brand line on hover */}
               <div
-                className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent ${c.topGlow} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-              />
-
-              <div className="space-y-5">
-                {/* Brand Icon Squircle */}
+                className={`group relative bg-white rounded-2xl p-7 sm:p-8 border border-slate-200/90 ${c.accentBorder} shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 flex flex-col justify-between space-y-8 overflow-hidden h-full`}
+              >
+                {/* Subtle top brand line on hover */}
                 <div
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-xs ${c.badgeBg}`}
-                >
-                  {c.icon}
+                  className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent ${c.topGlow} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                />
+
+                <div className="space-y-5">
+                  {/* Brand Icon Squircle */}
+                  <div
+                    className={`w-13 h-13 rounded-xl flex items-center justify-center transition-all duration-300 shadow-xs ${c.badgeBg}`}
+                  >
+                    {c.icon}
+                  </div>
+
+                  {/* Title & Concise Description */}
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-bold text-[#002b5b] tracking-tight">
+                      {c.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed mt-2">
+                      {c.desc}
+                    </p>
+                  </div>
                 </div>
 
-                {/* Title & Concise Description */}
+                {/* Action Button */}
                 <div>
-                  <h3 className="text-xl sm:text-2xl font-black text-[#002b5b] tracking-tight">
-                    {c.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed mt-2">
-                    {c.desc}
-                  </p>
+                  <a
+                    href={c.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-flex items-center justify-between w-full px-5 py-3 rounded-xl font-bold text-xs sm:text-sm text-white ${c.btnClass} transition-all duration-200 shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] group/btn`}
+                  >
+                    <span>{c.action}</span>
+                    <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
+                  </a>
                 </div>
               </div>
-
-              {/* Action Button */}
-              <div>
-                <a
-                  href={c.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`inline-flex items-center justify-between w-full px-5 py-3.5 rounded-xl font-bold text-xs sm:text-sm text-white ${c.btnClass} transition-all duration-200 shadow-xs hover:shadow-md group/btn`}
-                >
-                  <span>{c.action}</span>
-                  <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-                </a>
-              </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>

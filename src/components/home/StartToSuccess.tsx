@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from "react";
 import AnimatedCounter from "@/components/common/AnimatedCounter";
 import { overviewApi, PublicStatsReport } from "@/services/api/overviewApi";
 
+import ScrollReveal from "@/components/common/ScrollReveal";
+
 export default function StartToSuccess() {
   const [isInView, setIsInView] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -116,24 +118,30 @@ export default function StartToSuccess() {
     <section ref={sectionRef} className="py-20 lg:py-28 bg-[#f4f8fb] border-b border-slate-200/80">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 space-y-16">
         {/* Section Headline */}
-        <div className="text-center space-y-2">
+        <ScrollReveal direction="up" duration={500} className="text-center space-y-2">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#002b5b] tracking-tight">
             Start to Success
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 font-semibold uppercase tracking-widest">
             Key Institutional Milestones
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* 6 Grid Metric Counters */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 sm:gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 sm:gap-8">
           {stats.map((item, idx) => (
-            <div key={idx} className="flex flex-col items-center text-center space-y-3 group">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-white shadow-md flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-slate-100">
+            <ScrollReveal
+              key={idx}
+              direction="up"
+              delay={idx * 80}
+              duration={500}
+              className="flex flex-col items-center text-center space-y-3 group bg-white/70 backdrop-blur-xs p-5 rounded-2xl border border-slate-200/60 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+            >
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-sky-50/80 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 border border-sky-100/60">
                 {item.icon}
               </div>
 
-              <div className="text-3xl sm:text-4xl font-extrabold text-[#002b5b] tracking-tight">
+              <div className="text-2xl sm:text-3xl font-black text-[#002b5b] tracking-tight">
                 <AnimatedCounter
                   target={item.targetNumber}
                   suffix={item.suffix}
@@ -145,7 +153,7 @@ export default function StartToSuccess() {
               <div className="text-xs sm:text-sm font-bold text-slate-600">
                 {item.label}
               </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
