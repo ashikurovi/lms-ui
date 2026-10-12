@@ -74,14 +74,15 @@ export interface CourseModuleItem {
 export interface CouponItem {
   id: string;
   code: string;
-  batchId?: string;
+  batchId?: string | null;
   discountType: "percentage" | "fixed";
-  discountValue: number;
+  discountValue: number | string;
   startDate?: string;
   endDate?: string;
   usageLimit?: number;
   usedCount: number;
   isActive: boolean;
+  batch?: any;
 }
 
 export interface EnrolledLesson {

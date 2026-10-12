@@ -70,17 +70,16 @@ export default function AdminCreateCouponModal({
   const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     onCreateCoupon({
-      id: `cp-${Date.now()}`,
-      code: form.code.toUpperCase(),
+      code: form.code.trim().toUpperCase(),
       discountType: form.discountType,
       discountValue: Number(form.discountValue),
       batchId: form.batchId || undefined,
-      startDate: form.startDate || undefined,
-      endDate: form.endDate || undefined,
+      startDate: form.startDate ? new Date(form.startDate).toISOString() : undefined,
+      endDate: form.endDate ? new Date(form.endDate).toISOString() : undefined,
       usageLimit: Number(form.usageLimit),
       usedCount: 0,
       isActive: true,
-    });
+    } as any);
     onClose();
   };
 

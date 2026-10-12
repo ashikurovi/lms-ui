@@ -150,17 +150,39 @@ Email: ${profile.email}`;
   };
 
   const handleApplyCoupon = async () => {
-    if (!couponCode || !course.id) return;
+    if (!couponCode.trim()) {
+      setCouponError("Please enter a coupon code");
+      return;
+    }
     setCouponError("");
     setCouponLoading(true);
     try {
-      const res = await couponsApi.validateCoupon({ code: couponCode, courseId: course.id });
+      const payload: { code: string; courseId?: string; batchId?: string } = {
+        code: couponCode.trim().toUpperCase(),
+      };
+      if (batch?.id) payload.batchId = batch.id;
+      const courseId = course?.id || batch?.course_id;
+      if (courseId) payload.courseId = courseId;
+
+      const res = await couponsApi.validateCoupon(payload);
       if (res.statusCode === 200 && res.data) {
-        setAppliedCoupon(res.data);
+        const rawData: any = res.data;
+        const couponObj = rawData.coupon || rawData;
+        const discountType = (couponObj.discountType || couponObj.discount_type || "percentage") as "percentage" | "fixed";
+        const discountValue = Number(couponObj.discountValue ?? couponObj.discount_value ?? rawData.discountAmount ?? 0);
+        
+        setAppliedCoupon({
+          ...couponObj,
+          discountType,
+          discountValue,
+        });
+        setCouponError("");
       } else {
-        setCouponError(res.message || "Invalid coupon code");
+        setAppliedCoupon(null);
+        setCouponError(res.message || "Invalid or inactive coupon code");
       }
     } catch (err: any) {
+      setAppliedCoupon(null);
       setCouponError(err.message || "Failed to validate coupon");
     } finally {
       setCouponLoading(false);
@@ -198,10 +220,14 @@ Email: ${profile.email}`;
   // Calculate discount and amounts
   let finalDiscount = 0;
   if (paymentType === 'full' && appliedCoupon) {
+    const discVal = Number(appliedCoupon.discountValue) || 0;
     if (appliedCoupon.discountType === 'percentage') {
-      finalDiscount = (basePrice * appliedCoupon.discountValue) / 100;
+      finalDiscount = Math.round((basePrice * discVal) / 100);
     } else {
-      finalDiscount = appliedCoupon.discountValue;
+      finalDiscount = discVal;
+    }
+    if (finalDiscount > basePrice) {
+      finalDiscount = basePrice;
     }
   }
 
@@ -343,8 +369,22 @@ Email: ${profile.email}`;
                       </button>
                     )}
                   </div>
-                  {couponError && <p className="text-xs text-red-600 mt-2 font-medium flex items-center gap-1"><svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>{couponError}</p>}
-                  {appliedCoupon && <p className="text-xs text-green-600 mt-2 font-medium flex items-center gap-1"><svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>Coupon applied successfully!</p>}
+                  {couponError && (
+                    <p className="text-xs text-red-600 mt-2 font-medium flex items-center gap-1">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      {couponError}
+                    </p>
+                  )}
+                  {appliedCoupon && (
+                    <p className="text-xs text-green-600 mt-2 font-medium flex items-center gap-1">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Coupon &ldquo;{appliedCoupon.code}&rdquo; applied successfully ({appliedCoupon.discountType === "percentage" ? `${appliedCoupon.discountValue}%` : `৳${appliedCoupon.discountValue}`} OFF)!
+                    </p>
+                  )}
                 </div>
               )}
 

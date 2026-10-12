@@ -14,65 +14,85 @@ export default function AdminCouponsTab() {
   const [editingCoupon, setEditingCoupon] = useState<CouponItem | null>(null);
   const [deletingCoupon, setDeletingCoupon] = useState<CouponItem | null>(null);
 
-  useEffect(() => {
-    let isMounted = true;
-    (async () => {
-      try {
-        const { couponsApi } = await import("@/services/api/couponsApi");
-        const res = await couponsApi.getAllCoupons();
-        if (isMounted && res.statusCode === 200 && Array.isArray(res.data)) {
+  const fetchCoupons = async () => {
+    try {
+      setLoading(true);
+      const { couponsApi } = await import("@/services/api/couponsApi");
+      const res = await couponsApi.getAllCoupons({ limit: 100 });
+      if (res.statusCode === 200 && res.data) {
+        if (Array.isArray(res.data)) {
           setCoupons(res.data);
+        } else if (res.data && typeof res.data === "object" && Array.isArray((res.data as any).items)) {
+          setCoupons((res.data as any).items);
         }
-      } catch (err) {
-        console.error("Failed to fetch coupons", err);
-      } finally {
-        if (isMounted) setLoading(false);
       }
-    })();
-    return () => { isMounted = false; };
+    } catch (err) {
+      console.error("Failed to fetch coupons", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCoupons();
   }, []);
 
-  const handleCreateCoupon = async (newCoupon: CouponItem) => {
+  const handleCreateCoupon = async (newCoupon: Partial<CouponItem>) => {
     try {
       const { couponsApi } = await import("@/services/api/couponsApi");
       const res = await couponsApi.createCoupon(newCoupon);
-      if (res.statusCode === 201 && res.data) {
-        setCoupons([res.data, ...coupons]);
+      if ((res.statusCode === 200 || res.statusCode === 201) && res.data) {
+        const created = (res.data as any).coupon || res.data;
+        setCoupons((prev) => [created, ...prev]);
       } else {
-        // Fallback for immediate UI update if needed
-        setCoupons([newCoupon, ...coupons]);
+        await fetchCoupons();
       }
     } catch (err) {
       console.error("Error creating coupon", err);
+      await fetchCoupons();
     }
   };
 
   const toggleCouponStatus = async (id: string) => {
     const target = coupons.find((c) => c.id === id);
     if (!target) return;
+    const nextStatus = !target.isActive;
     try {
       const { couponsApi } = await import("@/services/api/couponsApi");
-      await couponsApi.updateCoupon(id, { isActive: !target.isActive });
-    } catch {}
-    setCoupons((prev) => prev.map((c) => (c.id === id ? { ...c, isActive: !c.isActive } : c)));
+      await couponsApi.updateCoupon(id, { isActive: nextStatus });
+      setCoupons((prev) => prev.map((c) => (c.id === id ? { ...c, isActive: nextStatus } : c)));
+    } catch (err) {
+      console.error("Failed to toggle coupon status", err);
+      await fetchCoupons();
+    }
   };
 
   const handleUpdateCoupon = async (id: string, payload: Partial<CouponItem>) => {
-    const { couponsApi } = await import("@/services/api/couponsApi");
-    const res = await couponsApi.updateCoupon(id, payload);
-    if (res.statusCode === 200 && res.data) {
-      setCoupons((prev) => prev.map((c) => (c.id === id ? res.data! : c)));
-    } else {
-      const refreshed = await couponsApi.getAllCoupons();
-      if (refreshed.data) setCoupons(refreshed.data);
+    try {
+      const { couponsApi } = await import("@/services/api/couponsApi");
+      const res = await couponsApi.updateCoupon(id, payload);
+      if (res.statusCode === 200 && res.data) {
+        const updated = (res.data as any).coupon || res.data;
+        setCoupons((prev) => prev.map((c) => (c.id === id ? { ...c, ...updated } : c)));
+      } else {
+        await fetchCoupons();
+      }
+    } catch (err) {
+      console.error("Error updating coupon", err);
+      await fetchCoupons();
     }
   };
 
   const handleDeleteCouponConfirm = async () => {
     if (!deletingCoupon) return;
-    const { couponsApi } = await import("@/services/api/couponsApi");
-    await couponsApi.deleteCoupon(deletingCoupon.id);
-    setCoupons((prev) => prev.filter((c) => c.id !== deletingCoupon.id));
+    try {
+      const { couponsApi } = await import("@/services/api/couponsApi");
+      await couponsApi.deleteCoupon(deletingCoupon.id);
+      setCoupons((prev) => prev.filter((c) => c.id !== deletingCoupon.id));
+    } catch (err) {
+      console.error("Error deleting coupon", err);
+      await fetchCoupons();
+    }
   };
 
   return (
@@ -122,7 +142,7 @@ export default function AdminCouponsTab() {
               coupons.map((c) => (
                 <tr key={c.id} className="hover:bg-slate-50 transition-colors">
                   <td className="p-4 font-mono font-bold text-slate-900">{c.code}</td>
-                  <td className="p-4 font-bold text-[#0077b6]">{c.discountType === "percentage" ? `${c.discountValue}%` : `৳${c.discountValue}`}</td>
+                  <td className="p-4 font-bold text-[#0077b6]">{c.discountType === "percentage" ? `${Number(c.discountValue)}%` : `৳${Number(c.discountValue).toLocaleString()}`}</td>
                   <td className="p-4">{c.usedCount || 0} / {c.usageLimit || "∞"}</td>
                   <td className="p-4"><span className={`px-2.5 py-1 rounded-full text-xs font-bold ${c.isActive ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-500"}`}>{c.isActive ? "Active" : "Inactive"}</span></td>
                   <td className="p-4 text-right">

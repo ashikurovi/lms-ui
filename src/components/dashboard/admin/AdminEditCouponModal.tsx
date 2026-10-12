@@ -55,7 +55,7 @@ export default function AdminEditCouponModal({
     if (coupon) {
       setCode(coupon.code || "");
       setDiscountType(coupon.discountType || "percentage");
-      setDiscountValue(coupon.discountValue || 0);
+      setDiscountValue(Number(coupon.discountValue) || 0);
       setBatchId(coupon.batchId || "");
       setStartDate(formatDateForInput(coupon.startDate));
       setEndDate(formatDateForInput(coupon.endDate));
