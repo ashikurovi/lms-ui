@@ -69,17 +69,19 @@ export default function AdminInvoiceModal({ isOpen, onClose, enrollmentId }: Adm
             {/* Invoice Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start border-b border-slate-100 pb-6 print:border-slate-300">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center text-white shrink-0">
-                  <GraduationCap className="w-6 h-6" />
-                </div>
+                <img
+                  src="/logo.jpeg"
+                  alt="BIM BUILD BD"
+                  className="h-12 w-auto object-contain rounded-xl shadow-sm border border-slate-100 print:shadow-none"
+                />
                 <div>
-                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">SkillSync Academy</h2>
+                  <h2 className="text-2xl font-black text-slate-900 tracking-tight">BIM BUILD BD</h2>
                   <p className="text-sm text-slate-500">Dhaka, Bangladesh</p>
-                  <p className="text-sm text-slate-500">contact@skillsync.com | +880 1234-567890</p>
+                  <p className="text-sm text-slate-500">info@advancebim.net | +880 1879-526108</p>
                 </div>
               </div>
               <div className="text-left sm:text-right mt-6 sm:mt-0">
-                <h1 className="text-3xl font-black text-indigo-600 uppercase tracking-widest">INVOICE</h1>
+                <h1 className="text-3xl font-black text-[#0077b6] uppercase tracking-widest">INVOICE</h1>
                 <p className="text-sm text-slate-600 mt-1">
                   <span className="font-bold text-slate-800">Invoice No:</span> #INV-{enrollmentId.split("-")[0].toUpperCase()}
                 </p>
@@ -172,7 +174,7 @@ export default function AdminInvoiceModal({ isOpen, onClose, enrollmentId }: Adm
 
             {/* Footer / Terms */}
             <div className="pt-8 border-t border-slate-100 text-center print:pt-16">
-              <p className="text-slate-400 text-sm font-medium">Thank you for enrolling with SkillSync Academy!</p>
+              <p className="text-slate-400 text-sm font-medium">Thank you for enrolling with BIM BUILD BD!</p>
               <p className="text-slate-400 text-xs mt-1">This is a system-generated invoice and does not require a physical signature.</p>
             </div>
 
