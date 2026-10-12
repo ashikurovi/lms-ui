@@ -8,9 +8,9 @@ export const noticesApi = {
   getActiveNotices: () => apiFetch("/notices/active", { method: "GET" }),
   getNoticeById: (id: string) => apiFetch(`/notices/${id}`, { method: "GET" }),
   createNotice: (data: any) =>
-    apiFetch("/notices", { method: "POST", body: data }),
+    apiFetch("/notices", { method: "POST", body: JSON.stringify(data) }),
   updateNotice: (id: string, data: any) =>
-    apiFetch(`/notices/${id}`, { method: "PATCH", body: data }),
+    apiFetch(`/notices/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
   deleteNotice: (id: string) =>
     apiFetch(`/notices/${id}`, { method: "DELETE" }),
 };

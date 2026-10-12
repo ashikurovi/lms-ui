@@ -34,7 +34,15 @@ export async function apiFetch<T>(
     ...(options.headers as Record<string, string>),
   };
 
-  if (!(options.body instanceof FormData)) {
+  let body = options.body;
+  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
+  const isBlob = typeof Blob !== "undefined" && body instanceof Blob;
+
+  if (body !== undefined && body !== null && typeof body === "object" && !isFormData && !isBlob) {
+    body = JSON.stringify(body);
+  }
+
+  if (!isFormData && !headers["Content-Type"]) {
     headers["Content-Type"] = "application/json";
   }
 
@@ -49,6 +57,7 @@ export async function apiFetch<T>(
       cache: "no-store",
       ...options,
       headers,
+      body,
     });
 
     const json = await res.json().catch(() => ({}));
