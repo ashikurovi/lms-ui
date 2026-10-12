@@ -3,6 +3,9 @@ import { apiFetch } from "./apiClient";
 export interface BlogItem {
   id: string;
   title: string;
+  category?: string;
+  seoTitle?: string;
+  seoDescription?: string;
   content: string;
   image?: string;
   createdAt?: string;

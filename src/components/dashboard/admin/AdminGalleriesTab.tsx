@@ -101,10 +101,10 @@ export default function AdminGalleriesTab() {
     setIsUploading(true);
     try {
       const res = await uploadApi.uploadFile(file);
-      if (res.statusCode === 200 && res.data?.url) {
-        setFormData({ ...formData, imageUrl: res.data.url });
+      if ((res.statusCode === 200 || res.statusCode === 201) && res.data?.url) {
+        setFormData((prev) => ({ ...prev, imageUrl: res.data!.url }));
       } else {
-        alert("Failed to upload image");
+        alert("Failed to upload image: " + (res.message || "Unknown error"));
       }
     } catch (error) {
       console.error("Upload error:", error);

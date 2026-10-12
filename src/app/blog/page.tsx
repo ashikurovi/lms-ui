@@ -126,8 +126,9 @@ export default function BlogsPage() {
         {!loading && blogs.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {blogs.map((blog) => {
-              const category = (blog as unknown as { category?: string }).category || "Engineering";
-              const excerpt = getExcerpt(blog.content);
+              const category = blog.category || "Engineering";
+              const shortDesc = blog.seoDescription || getExcerpt(blog.content);
+              const displayTitle = blog.seoTitle || blog.title;
 
               return (
                 <Link
@@ -166,12 +167,12 @@ export default function BlogsPage() {
                       </div>
 
                       <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug group-hover:text-[#0077b6] transition-colors line-clamp-2">
-                        {blog.title}
+                        {displayTitle}
                       </h3>
 
-                      {excerpt && (
+                      {shortDesc && (
                         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-3">
-                          {excerpt}
+                          {shortDesc}
                         </p>
                       )}
                     </div>

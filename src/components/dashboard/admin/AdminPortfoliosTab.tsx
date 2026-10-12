@@ -92,10 +92,10 @@ export default function AdminPortfoliosTab() {
     setIsUploading(true);
     try {
       const res = await uploadApi.uploadFile(file);
-      if (res.statusCode === 200 && res.data?.url) {
-        setFormData({ ...formData, image: res.data.url });
+      if ((res.statusCode === 200 || res.statusCode === 201) && res.data?.url) {
+        setFormData((prev) => ({ ...prev, image: res.data!.url }));
       } else {
-        alert("Failed to upload image");
+        alert("Failed to upload image: " + (res.message || "Unknown error"));
       }
     } catch (error) {
       console.error("Upload error:", error);

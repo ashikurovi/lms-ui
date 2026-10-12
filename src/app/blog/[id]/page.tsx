@@ -127,23 +127,16 @@ export default function BlogDetailsPage() {
     let isMounted = true;
 
     (async () => {
+      // 1. Fetch current blog
       try {
-        // Fetch specific blog from backend API
         const res = await blogsApi.getBlogById(id);
-        if (isMounted && res.statusCode === 200 && res.data) {
+        if (isMounted && (res.statusCode === 200 || res.statusCode === 201) && res.data) {
           setBlog(res.data);
         } else if (fallbackArticles[id]) {
-          // If not in DB, use rich fallback
           setBlog({
             id,
             ...fallbackArticles[id],
           });
-        }
-
-        // Fetch recent blogs for the sidebar
-        const listRes = await blogsApi.getAllBlogs();
-        if (isMounted && listRes.statusCode === 200 && listRes.data) {
-          setAllBlogs(listRes.data.filter((b: any) => b.id !== id).slice(0, 4));
         }
       } catch {
         if (fallbackArticles[id]) {
@@ -152,6 +145,21 @@ export default function BlogDetailsPage() {
             ...fallbackArticles[id],
           });
         }
+      }
+
+      // 2. Fetch recent blogs for the sidebar & recommendations
+      try {
+        const listRes = await blogsApi.getAllBlogs();
+        if (isMounted && (listRes.statusCode === 200 || listRes.statusCode === 201) && listRes.data) {
+          const items = Array.isArray(listRes.data)
+            ? listRes.data
+            : ((listRes.data as unknown as { items?: any[] })?.items || []);
+          if (Array.isArray(items) && items.length > 0) {
+            setAllBlogs(items.filter((b: any) => String(b.id) !== String(id)).slice(0, 6));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load recent blogs:", err);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -221,8 +229,15 @@ export default function BlogDetailsPage() {
 
           {/* Title */}
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#002b5b] tracking-tight leading-tight max-w-4xl">
-            {currentBlog.title}
+            {currentBlog.seoTitle || currentBlog.title}
           </h1>
+
+          {/* SEO Short Description / Lead Summary */}
+          {currentBlog.seoDescription && (
+            <p className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed max-w-3xl">
+              {currentBlog.seoDescription}
+            </p>
+          )}
 
           {/* Author & Meta Row */}
           <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-slate-100 text-xs sm:text-sm text-slate-500">
@@ -344,45 +359,76 @@ export default function BlogDetailsPage() {
               </Link>
             </div>
 
-            {/* Recent Articles Card */}
+            {/* Recent Articles Sidebar Card */}
             <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
-              <h3 className="text-sm font-bold text-[#002b5b] uppercase tracking-wider flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-[#0077b6]" />
-                <span>Related Articles</span>
-              </h3>
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <h3 className="text-sm font-bold text-[#002b5b] uppercase tracking-wider flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-[#0077b6]" />
+                  <span>Recent Articles</span>
+                </h3>
+                <Link
+                  href="/blog"
+                  className="text-xs font-bold text-[#0077b6] hover:text-[#002b5b] transition-colors"
+                >
+                  View All
+                </Link>
+              </div>
 
-              <div className="space-y-3.5 divide-y divide-slate-100">
+              <div className="space-y-4 divide-y divide-slate-100">
                 {(allBlogs.length > 0
-                  ? allBlogs.map((item) => ({
-                      key: item.id,
-                      category: item.category || "Engineering",
-                      title: item.title,
-                      readTime: "5 min read",
-                    }))
+                  ? allBlogs.slice(0, 5)
                   : Object.entries(fallbackArticles)
                       .filter(([key]) => key !== id)
-                      .slice(0, 3)
+                      .slice(0, 4)
                       .map(([key, item]) => ({
-                        key,
-                        category: item.category,
+                        id: key,
                         title: item.title,
-                        readTime: item.readTime,
+                        category: item.category,
+                        image: item.image,
+                        createdAt: item.date,
+                        seoTitle: item.title,
                       }))
-                ).map((item) => (
+                ).map((item: any) => (
                   <Link
-                    key={item.key}
-                    href={`/blog/${item.key}`}
-                    className="block pt-3.5 first:pt-0 group cursor-pointer"
+                    key={item.id}
+                    href={`/blog/${item.id}`}
+                    className="flex items-center gap-3.5 pt-4 first:pt-0 group cursor-pointer"
                   >
-                    <span className="text-[10px] font-bold text-[#0077b6] uppercase tracking-wider block">
-                      {item.category}
-                    </span>
-                    <h4 className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-[#0077b6] transition-colors leading-snug mt-1">
-                      {item.title}
-                    </h4>
-                    <span className="text-[11px] text-slate-400 mt-1 block">
-                      {item.readTime}
-                    </span>
+                    {/* Thumbnail */}
+                    <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200/70">
+                      <img
+                        src={
+                          item.image ||
+                          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80"
+                        }
+                        alt=""
+                        loading="lazy"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80";
+                        }}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+
+                    {/* Details */}
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[10px] font-bold text-[#0077b6] uppercase tracking-wider block truncate">
+                        {item.category || "Engineering"}
+                      </span>
+                      <h4 className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-[#0077b6] transition-colors leading-snug line-clamp-2 mt-0.5">
+                        {item.seoTitle || item.title}
+                      </h4>
+                      <span className="text-[11px] text-slate-400 mt-1 block">
+                        {item.createdAt
+                          ? new Date(item.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                          : "Recent"}
+                      </span>
+                    </div>
                   </Link>
                 ))}
               </div>
@@ -390,6 +436,107 @@ export default function BlogDetailsPage() {
 
           </aside>
 
+        </div>
+      </div>
+
+      {/* 3. Bottom Recent Articles Showcase */}
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+        <div className="border-t border-slate-200/80 pt-10 space-y-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="text-xs font-bold text-[#0077b6] uppercase tracking-wider">
+                Explore More
+              </span>
+              <h3 className="text-xl sm:text-2xl font-black text-[#002b5b] tracking-tight mt-1">
+                Recent Engineering & BIM Blogs
+              </h3>
+            </div>
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#0077b6] hover:text-[#002b5b] transition-colors"
+            >
+              <span>All Articles</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {(allBlogs.length > 0
+              ? allBlogs.slice(0, 3)
+              : Object.entries(fallbackArticles)
+                  .filter(([key]) => key !== id)
+                  .slice(0, 3)
+                  .map(([key, item]) => ({
+                    id: key,
+                    title: item.title,
+                    category: item.category,
+                    image: item.image,
+                    createdAt: item.date,
+                    seoTitle: item.title,
+                    seoDescription:
+                      "Learn practical modeling techniques and coordination workflows from certified engineers.",
+                  }))
+            ).map((item: any) => (
+              <Link
+                key={item.id}
+                href={`/blog/${item.id}`}
+                className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-xl hover:border-sky-300 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 cursor-pointer"
+              >
+                <div>
+                  <div className="relative h-44 w-full bg-slate-900 overflow-hidden">
+                    <img
+                      src={
+                        item.image ||
+                        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80"
+                      }
+                      alt={item.title}
+                      loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80";
+                      }}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-95"
+                    />
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2.5 py-1 rounded-lg bg-white/95 backdrop-blur-md text-[#0077b6] font-bold text-[10px] tracking-wider uppercase shadow-xs">
+                        {item.category || "BIM & AEC"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-5 space-y-2">
+                    <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+                      <Calendar className="w-3.5 h-3.5" />
+                      <span>
+                        {item.createdAt
+                          ? new Date(item.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                          : "Recent"}
+                      </span>
+                    </div>
+
+                    <h4 className="text-sm sm:text-base font-bold text-slate-900 leading-snug group-hover:text-[#0077b6] transition-colors line-clamp-2">
+                      {item.seoTitle || item.title}
+                    </h4>
+
+                    {item.seoDescription && (
+                      <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                        {item.seoDescription}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="px-5 pb-4 pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#0077b6] group-hover:text-[#002b5b]">
+                  <span>Read Article</span>
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 
