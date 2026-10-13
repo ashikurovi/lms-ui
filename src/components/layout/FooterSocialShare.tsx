@@ -5,25 +5,57 @@ import Link from "next/link";
 
 export default function FooterSocialShare() {
   return (
-    <div className="lg:col-span-5 space-y-7">
-      <Link href="/" className="flex items-center gap-3.5 group">
-        <img
-          src="/logo.jpeg"
-          alt="BIM Build BD"
-          className="h-20 sm:h-24 w-auto object-contain rounded-2xl shadow-sm"
-        />
+    <div className="lg:col-span-5 space-y-6">
+      {/* Brand Logo matching Header & Banner */}
+      <Link href="/" className="flex items-center gap-3.5 group inline-flex">
+        <div className="relative flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+          <svg
+            className="w-11 h-11 text-white shrink-0 drop-shadow-[0_0_10px_rgba(56,189,248,0.4)]"
+            viewBox="0 0 40 40"
+            fill="none"
+          >
+            <circle cx="20" cy="20" r="17" stroke="currentColor" strokeWidth="1.8" className="text-white/90" />
+            <ellipse cx="20" cy="20" rx="9.5" ry="17" stroke="currentColor" strokeWidth="1.4" className="text-sky-300/90" />
+            <ellipse cx="20" cy="20" rx="4.5" ry="17" stroke="currentColor" strokeWidth="1.2" className="text-sky-200/80" />
+            <line x1="20" y1="3" x2="20" y2="37" stroke="currentColor" strokeWidth="1.4" className="text-white/70" />
+            <line x1="4" y1="13" x2="36" y2="13" stroke="currentColor" strokeWidth="1.3" className="text-sky-300/80" />
+            <line x1="3" y1="20" x2="37" y2="20" stroke="currentColor" strokeWidth="1.5" className="text-white/90" />
+            <line x1="4" y1="27" x2="36" y2="27" stroke="currentColor" strokeWidth="1.3" className="text-sky-300/80" />
+            <circle cx="10.5" cy="13" r="1.5" fill="#38BDF8" />
+            <circle cx="20" cy="13" r="1.8" fill="#FFFFFF" />
+            <circle cx="29.5" cy="13" r="1.5" fill="#38BDF8" />
+            <circle cx="20" cy="20" r="2" fill="#FFFFFF" />
+            <circle cx="10.5" cy="27" r="1.5" fill="#38BDF8" />
+            <circle cx="29.5" cy="27" r="1.5" fill="#38BDF8" />
+          </svg>
+        </div>
+
+        <div className="flex flex-col">
+          <span className="text-2xl sm:text-[26px] font-black tracking-tight text-white leading-tight">
+            BIM Build BD
+          </span>
+          <span className="text-xs font-semibold text-sky-200/90 tracking-wide pt-0.5">
+            A Global BiM Training Institute
+          </span>
+        </div>
       </Link>
 
-      {/* Share Now row with square icons */}
-      <div className="space-y-2.5 pt-1">
-        <div className="text-xs sm:text-sm font-extrabold text-slate-900">Share Now</div>
+      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-sm">
+        Empowering engineers, architects, and modelers with industry-grade practical BIM workflows in Revit, Navisworks, Tekla, AutoCAD, and 3ds Max.
+      </p>
+
+      {/* Share / Social links row */}
+      <div className="space-y-3 pt-1">
+        <div className="text-xs sm:text-sm font-extrabold text-white uppercase tracking-wider">
+          Connect & Share
+        </div>
         <div className="flex items-center gap-2.5 text-white">
           {/* Facebook */}
           <a
             href="https://facebook.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-8 h-8 rounded-sm bg-[#1877f2] flex items-center justify-center hover:opacity-85 transition-opacity"
+            className="w-9 h-9 rounded-lg bg-[#1877f2] flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all"
             aria-label="Share Facebook"
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -36,7 +68,7 @@ export default function FooterSocialShare() {
             href="https://wa.me/8801879526108"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-8 h-8 rounded-sm bg-[#25d366] flex items-center justify-center hover:opacity-85 transition-opacity"
+            className="w-9 h-9 rounded-lg bg-[#25d366] flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all"
             aria-label="Share WhatsApp"
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -49,7 +81,7 @@ export default function FooterSocialShare() {
             href="https://linkedin.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-8 h-8 rounded-sm bg-[#0077b5] flex items-center justify-center hover:opacity-85 transition-opacity"
+            className="w-9 h-9 rounded-lg bg-[#0077b5] flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all"
             aria-label="Share LinkedIn"
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -62,7 +94,7 @@ export default function FooterSocialShare() {
             href="https://telegram.org"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-8 h-8 rounded-sm bg-[#0088cc] flex items-center justify-center hover:opacity-85 transition-opacity"
+            className="w-9 h-9 rounded-lg bg-[#0088cc] flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all"
             aria-label="Share Telegram"
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -73,7 +105,7 @@ export default function FooterSocialShare() {
           {/* Email */}
           <a
             href="mailto:info@advancebim.net"
-            className="w-8 h-8 rounded-sm bg-[#ea4335] flex items-center justify-center hover:opacity-85 transition-opacity"
+            className="w-9 h-9 rounded-lg bg-[#ea4335] flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all"
             aria-label="Share Email"
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -85,3 +117,4 @@ export default function FooterSocialShare() {
     </div>
   );
 }
+

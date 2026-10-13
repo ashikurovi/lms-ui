@@ -29,10 +29,17 @@ export default function RecentGalleriesSection() {
   return (
     <section className="py-16 sm:py-20 bg-white font-sans border-t border-slate-100">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 space-y-10">
-        <ScrollReveal direction="up" duration={500} className="text-center pb-2">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#002b5b] tracking-tight">
-            Our Gallery
+        <ScrollReveal direction="up" duration={500} className="text-center space-y-3 max-w-2xl mx-auto pb-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-[#0077b6] text-xs font-bold tracking-wider uppercase shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-[#0077b6]" />
+            <span>Campus & Community</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#0B2B56] tracking-tight">
+            Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0077b6] to-sky-500">Students Gallery</span>
           </h2>
+          <p className="text-sm sm:text-base text-slate-600 font-medium">
+            Memorable moments from practical lab workshops, offline BIM sessions, and student celebrations.
+          </p>
         </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">

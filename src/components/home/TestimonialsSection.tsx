@@ -196,13 +196,17 @@ export default function TestimonialsSection() {
     <section className="py-20 sm:py-24 bg-white font-sans overflow-hidden">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 space-y-10 sm:space-y-12">
         {/* Clean Centered Header */}
-        <ScrollReveal direction="up" duration={500} className="text-center space-y-2.5">
-          <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#0077b6]">
-            TESTIMONIALS
-          </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#002b5b] tracking-tight">
-            What Students Say About Us
+        <ScrollReveal direction="up" duration={500} className="text-center space-y-3 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-[#0077b6] text-xs font-bold tracking-wider uppercase shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-[#0077b6]" />
+            <span>Student Success Stories</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#0B2B56] tracking-tight">
+            What Students <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0077b6] to-sky-500">Say About Us</span>
           </h2>
+          <p className="text-sm sm:text-base text-slate-600 font-medium">
+            Read real feedback and career experiences from our graduate engineers and BIM modelers.
+          </p>
         </ScrollReveal>
 
         {/* Seamless Infinite Sliding Track */}

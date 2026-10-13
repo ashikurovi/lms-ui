@@ -57,13 +57,17 @@ export default function CommunityCards() {
     <section className="py-20 sm:py-24 bg-[#f8fafc] border-t border-slate-100 font-sans">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 space-y-12">
         {/* Section Header */}
-        <ScrollReveal direction="up" duration={500} className="text-center space-y-2">
-          <span className="text-xs sm:text-sm font-bold uppercase tracking-widest text-[#0077b6]">
-            COMMUNITY
-          </span>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#002b5b] tracking-tight">
-            Join Our Learning Community
+        <ScrollReveal direction="up" duration={500} className="text-center space-y-3 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-[#0077b6] text-xs font-bold tracking-wider uppercase shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-[#0077b6]" />
+            <span>Global Communities</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#0B2B56] tracking-tight">
+            Join Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0077b6] to-sky-500">Learning Community</span>
           </h2>
+          <p className="text-sm sm:text-base text-slate-600 font-medium">
+            Connect directly with thousands of fellow engineers, watch weekly video walkthroughs, and grow your career.
+          </p>
         </ScrollReveal>
 
         {/* 3 Redesigned Cards */}
@@ -94,10 +98,10 @@ export default function CommunityCards() {
 
                   {/* Title & Concise Description */}
                   <div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-[#002b5b] tracking-tight">
+                    <h3 className="text-xl sm:text-2xl font-black text-[#0B2B56] tracking-tight">
                       {c.title}
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed mt-2">
+                    <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed mt-2">
                       {c.desc}
                     </p>
                   </div>

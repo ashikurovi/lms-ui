@@ -118,12 +118,16 @@ export default function StartToSuccess() {
     <section ref={sectionRef} className="py-20 lg:py-28 bg-[#f4f8fb] border-b border-slate-200/80">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 space-y-16">
         {/* Section Headline */}
-        <ScrollReveal direction="up" duration={500} className="text-center space-y-2">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#002b5b] tracking-tight">
-            Start to Success
+        <ScrollReveal direction="up" duration={500} className="text-center space-y-3 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-[#0077b6] text-xs font-bold tracking-wider uppercase shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-[#0077b6]" />
+            <span>Proven Track Record</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#0B2B56] tracking-tight">
+            Start to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0077b6] to-sky-500">Success Milestones</span>
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 font-semibold uppercase tracking-widest">
-            Key Institutional Milestones
+          <p className="text-sm sm:text-base text-slate-600 font-medium">
+            Over a decade of leadership in building information modeling education and engineering excellence.
           </p>
         </ScrollReveal>
 

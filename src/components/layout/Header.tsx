@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import TopBar from "./TopBar";
 import Navbar from "./Navbar";
 
 export default function Header() {
@@ -11,7 +10,7 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
+      if (window.scrollY > 15) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
@@ -31,17 +30,12 @@ export default function Header() {
     <header
       className={`sticky top-0 z-50 w-full max-w-full print:hidden transition-all duration-300 ease-in-out ${
         isScrolled
-          ? "shadow-xl shadow-slate-900/15 border-b border-slate-200"
-          : "shadow-xs border-b border-slate-100"
+          ? "shadow-2xl shadow-slate-950/40 bg-[#072244]/95 backdrop-blur-md border-b border-sky-900/50"
+          : "bg-[#0a284f] border-b border-white/10"
       }`}
     >
-      {/* 1. TopBar (Always Sticky with Header) */}
-      <TopBar />
-
-      {/* 2. Main Navbar (Sticky with Header) */}
-      <div className="bg-white">
-        <Navbar isScrolled={isScrolled} />
-      </div>
+      <Navbar isScrolled={isScrolled} />
     </header>
   );
 }
+

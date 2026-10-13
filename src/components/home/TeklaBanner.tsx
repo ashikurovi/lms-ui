@@ -9,9 +9,13 @@ export default function TeklaBanner() {
   return (
     <section className="pt-6 sm:pt-8 pb-16 sm:pb-20 bg-white font-sans">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-        <ScrollReveal direction="up" duration={500}>
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#002b5b] tracking-tight">
-            Professional Tekla Course
+        <ScrollReveal direction="up" duration={500} className="space-y-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-[#0077b6] text-xs font-bold tracking-wider uppercase shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-[#0077b6]" />
+            <span>Specialized Structural Masterclass</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#0B2B56] tracking-tight">
+            Professional <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0077b6] to-sky-500">Tekla Structure</span> Course
           </h2>
         </ScrollReveal>
 
@@ -31,7 +35,7 @@ export default function TeklaBanner() {
                 <div className="pt-2">
                   <Link
                     href="/courses"
-                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-[#0077b6] hover:bg-[#005a8c] text-white font-bold text-sm sm:text-base shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-white hover:bg-slate-100 text-[#0B2B56] font-bold text-sm sm:text-base shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
                   >
                     <span>Enroll Tekla Course</span>
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

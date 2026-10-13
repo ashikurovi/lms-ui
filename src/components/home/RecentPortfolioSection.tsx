@@ -27,11 +27,18 @@ export default function RecentPortfolioSection() {
   return (
     <section className="py-16 sm:py-20 bg-[#f8fafc] font-sans border-y border-slate-100">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 space-y-10">
-        {/* Section Header - Clean & Centered */}
-        <ScrollReveal direction="up" duration={500} className="text-center pb-2">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#002b5b] tracking-tight">
-            Recent Projects & Student Portfolio
+        {/* Section Header - Highlighted & Centered */}
+        <ScrollReveal direction="up" duration={500} className="text-center space-y-3 max-w-2xl mx-auto pb-2">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-[#0077b6] text-xs font-bold tracking-wider uppercase shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-[#0077b6]" />
+            <span>Featured Deliverables</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#0B2B56] tracking-tight">
+            Recent Projects & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0077b6] to-sky-500">Student Portfolio</span>
           </h2>
+          <p className="text-sm sm:text-base text-slate-600 font-medium">
+            Live project models and drawings produced by our students across architecture, structural engineering, and MEP coordination.
+          </p>
         </ScrollReveal>
 
         {/* 3-Column Portfolio Cards Grid */}
@@ -63,7 +70,7 @@ export default function RecentPortfolioSection() {
 
                   {/* Floating Category Pill */}
                   <div className="absolute top-3 left-3">
-                    <span className="px-3 py-1 rounded-lg bg-white/95 backdrop-blur-md text-[#0077b6] font-bold text-[11px] tracking-wider uppercase shadow-xs">
+                    <span className="px-3 py-1 rounded-lg bg-[#0B2B56] text-white font-extrabold text-[11px] tracking-wider uppercase shadow-md">
                       {project.category || "Project"}
                     </span>
                   </div>
@@ -71,7 +78,7 @@ export default function RecentPortfolioSection() {
                   {/* Software Tool Badge */}
                   {project.tools && (
                     <div className="absolute bottom-3 left-3">
-                      <span className="px-2.5 py-1 rounded-md bg-slate-950/75 backdrop-blur-md text-white/90 text-[11px] font-semibold border border-white/10 shadow-xs">
+                      <span className="px-2.5 py-1 rounded-md bg-slate-950/80 backdrop-blur-md text-white/95 text-[11px] font-semibold border border-white/10 shadow-xs">
                         {project.tools}
                       </span>
                     </div>
@@ -80,16 +87,17 @@ export default function RecentPortfolioSection() {
 
                 {/* Card Body & CTA */}
                 <div className="pt-4 px-1 flex flex-col justify-between flex-1">
-                  <h3 className="text-base sm:text-lg font-bold text-[#002b5b] group-hover:text-[#0077b6] transition-colors line-clamp-2 leading-snug">
+                  <h3 className="text-base sm:text-lg font-black text-[#0B2B56] group-hover:text-[#0077b6] transition-colors line-clamp-2 leading-snug">
                     {project.title}
                   </h3>
 
                   <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-xs sm:text-sm font-semibold text-slate-600 group-hover:text-[#0077b6] transition-colors">
+                    <span className="text-xs sm:text-sm font-bold text-slate-600 group-hover:text-[#0077b6] transition-colors">
                       Explore Project
                     </span>
-                    <div className="w-8 h-8 rounded-xl bg-sky-50 text-[#0077b6] group-hover:bg-[#0077b6] group-hover:text-white flex items-center justify-center transition-all duration-200 shadow-xs">
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                    <div className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-xl bg-[#0B2B56] text-white group-hover:bg-[#0077b6] text-xs font-bold transition-all duration-200 shadow-xs">
+                      <span>View</span>
+                      <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                     </div>
                   </div>
                 </div>

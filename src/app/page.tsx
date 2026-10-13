@@ -5,7 +5,6 @@ import RecentPortfolioSection from "@/components/home/RecentPortfolioSection";
 import RecentGalleriesSection from "@/components/home/RecentGalleriesSection";
 import NoticePopup from "@/components/home/NoticePopup";
 import FeaturedCourses from "@/components/home/FeaturedCourses";
-import TeklaBanner from "@/components/home/TeklaBanner";
 import StartToSuccess from "@/components/home/StartToSuccess";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import CommunityCards from "@/components/home/CommunityCards";
@@ -29,8 +28,7 @@ export default function HomePage() {
       <RecentPortfolioSection />
 
       {/* Gallery */}
-      <RecentGalleriesSection />      {/* 5. Tekla Course */}
-      <TeklaBanner />
+      <RecentGalleriesSection />
 
       {/* 6. Start to Success Stats Bar */}
       <StartToSuccess />
