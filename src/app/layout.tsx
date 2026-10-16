@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   title: "BIM Build BD | Learn BIM Build Your Career",
   description:
     "Professional BIM, Revit Architecture, Structure, MEP, Navisworks, AutoCAD & Dynamo Online Learning Platform. Plan • Build • Deliver.",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({

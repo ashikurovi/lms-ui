@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { ArrowRight, Sparkles, PhoneCall } from "lucide-react";
+import { ArrowRight, Building2, PhoneCall } from "lucide-react";
 
 export default function CtaBanner() {
   return (
@@ -9,7 +9,7 @@ export default function CtaBanner() {
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 text-center lg:text-left">
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/15 backdrop-blur-md text-sky-200 text-xs font-bold uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" />
+              <Building2 className="w-3.5 h-3.5" />
               <span>Join BIM Build BD</span>
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">

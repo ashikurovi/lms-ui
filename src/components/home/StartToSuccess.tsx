@@ -3,8 +3,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import AnimatedCounter from "@/components/common/AnimatedCounter";
 import { overviewApi, PublicStatsReport } from "@/services/api/overviewApi";
-
 import ScrollReveal from "@/components/common/ScrollReveal";
+import {
+  Calendar,
+  Users,
+  Briefcase,
+  Globe,
+  UserCheck,
+  Star,
+} from "lucide-react";
 
 export default function StartToSuccess() {
   const [isInView, setIsInView] = useState(false);
@@ -32,129 +39,102 @@ export default function StartToSuccess() {
   const [statsData, setStatsData] = useState<PublicStatsReport | null>(null);
 
   useEffect(() => {
-    overviewApi.getPublicStats()
+    overviewApi
+      .getPublicStats()
       .then((data) => {
         if (data) setStatsData(data);
       })
       .catch(console.error);
   }, []);
 
-  const stats = [
-    {
-      targetNumber: statsData?.expertTrainers || 15,
-      suffix: "",
-      label: "Expert Trainer",
-      icon: (
-        <svg className="w-12 h-12 stroke-[#0077b6] fill-none" viewBox="0 0 48 48" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="18" cy="18" r="6" />
-          <path d="M8 38c0-5.5 4.5-10 10-10s10 4.5 10 10" />
-          <path d="M26 14h14v16H26" />
-          <path d="M33 30v8M29 38h8" />
-        </svg>
-      ),
-    },
-    {
-      targetNumber: statsData?.programs || 12,
-      suffix: "",
-      label: "Programs",
-      icon: (
-        <svg className="w-12 h-12 stroke-[#0077b6] fill-none" viewBox="0 0 48 48" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="8" y="10" width="22" height="16" rx="2" />
-          <path d="M4 26h30" />
-          <rect x="22" y="18" width="18" height="14" rx="2" />
-          <path d="M18 32h26" />
-        </svg>
-      ),
-    },
-    {
-      targetNumber: statsData?.students || 200,
-      suffix: "+",
-      label: "Students",
-      icon: (
-        <svg className="w-12 h-12 fill-[#0077b6]" viewBox="0 0 48 48">
-          <path d="M24 10L4 20l20 10 16-8v10h4V20L24 10z" />
-          <path d="M12 25.5V33c0 4.5 5.4 8 12 8s12-3.5 12-8v-7.5l-12 6-12-6z" />
-        </svg>
-      ),
-    },
-    {
-      targetNumber: statsData?.courseVideos || 312,
-      suffix: "",
-      label: "Course Videos",
-      icon: (
-        <svg className="w-12 h-12 stroke-[#0077b6] fill-none" viewBox="0 0 48 48" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="8" y="12" width="32" height="24" rx="3" />
-          <path d="M8 20h32M16 12l-4 8M24 12l-4 8M32 12l-4 8" />
-          <polygon points="21,25 29,29 21,33" fill="#0077b6" stroke="none" />
-        </svg>
-      ),
-    },
-    {
-      targetNumber: statsData?.liveClasses || 45,
-      suffix: "",
-      label: "Live Classes",
-      icon: (
-        <svg className="w-12 h-12 stroke-[#0077b6] fill-none" viewBox="0 0 48 48" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="8" y="18" width="22" height="18" rx="2" />
-          <circle cx="14" cy="12" r="5" />
-          <circle cx="24" cy="12" r="5" />
-          <path d="M30 23l10-6v18l-10-6v-6z" />
-        </svg>
-      ),
-    },
+  const whyChooseUsMetrics = [
     {
       targetNumber: statsData?.yearsOfExperience || 10,
       suffix: "+",
-      label: "Years of Experience",
-      icon: (
-        <svg className="w-12 h-12 fill-[#0077b6]" viewBox="0 0 48 48">
-          <path d="M24 6l4.5 9 10 1.5-7.2 7 1.7 10-9-4.8-9 4.8 1.7-10-7.2-7 10-1.5L24 6z" />
-        </svg>
-      ),
+      label: "Years Experience",
+      icon: <Calendar className="w-8 h-8 text-[#0077b6] stroke-[1.8]" />,
+    },
+    {
+      targetNumber: statsData?.expertTrainers || 50,
+      suffix: "+",
+      label: "BIM Experts & Trainers",
+      icon: <Users className="w-8 h-8 text-[#0077b6] stroke-[1.8]" />,
+    },
+    {
+      targetNumber: statsData?.students || 100,
+      suffix: "+",
+      label: "Completed Projects",
+      icon: <Briefcase className="w-8 h-8 text-[#0077b6] stroke-[1.8]" />,
+    },
+    {
+      targetNumber: statsData?.programs || 15,
+      suffix: "+",
+      label: "Countries Served",
+      icon: <Globe className="w-8 h-8 text-[#0077b6] stroke-[1.8]" />,
+    },
+    {
+      targetNumber: 99,
+      suffix: "%",
+      label: "Happy Clients & Students",
+      icon: <UserCheck className="w-8 h-8 text-[#0077b6] stroke-[1.8]" />,
+    },
+    {
+      targetNumber: 4.9,
+      suffix: "",
+      isDecimal: true,
+      label: "Average Rating",
+      icon: <Star className="w-8 h-8 text-[#0077b6] stroke-[1.8]" />,
     },
   ];
 
   return (
-    <section ref={sectionRef} className="py-20 lg:py-28 bg-[#f4f8fb] border-b border-slate-200/80">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12 space-y-16">
-        {/* Section Headline */}
-        <ScrollReveal direction="up" duration={500} className="text-center space-y-3 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-[#0077b6] text-xs font-bold tracking-wider uppercase shadow-xs">
+    <section ref={sectionRef} className="py-20 lg:py-24 bg-white font-sans border-b border-slate-100">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
+        {/* Section Headline matching Reference Screenshot */}
+        <ScrollReveal direction="up" duration={500} className="text-center space-y-2 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 border border-sky-100 text-[#0077b6] text-xs font-bold tracking-wider uppercase">
             <span className="w-2 h-2 rounded-full bg-[#0077b6]" />
             <span>Proven Track Record</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#0B2B56] tracking-tight">
-            Start to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0077b6] to-sky-500">Success Milestones</span>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-[#0B2B56] tracking-tight">
+            Why Choose Us
           </h2>
-          <p className="text-sm sm:text-base text-slate-600 font-medium">
-            Over a decade of leadership in building information modeling education and engineering excellence.
+          <p className="text-sm sm:text-base text-slate-600 font-normal">
+            A decade of leadership in building information modeling education, engineering coordination, and student career success.
           </p>
         </ScrollReveal>
 
-        {/* 6 Grid Metric Counters */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 sm:gap-8">
-          {stats.map((item, idx) => (
+        {/* 6 Metric Boxes Row (Exact Match to Reference Screenshot) */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
+          {whyChooseUsMetrics.map((item, idx) => (
             <ScrollReveal
               key={idx}
               direction="up"
-              delay={idx * 80}
+              delay={idx * 70}
               duration={500}
-              className="flex flex-col items-center text-center space-y-3 group bg-white/70 backdrop-blur-xs p-5 rounded-2xl border border-slate-200/60 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+              className="flex flex-col items-center text-center p-6 sm:p-7 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-sky-300 transition-all duration-300 hover:-translate-y-1 group"
             >
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-sky-50/80 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 border border-sky-100/60">
+              {/* Minimal Clean Outline Icon */}
+              <div className="w-14 h-14 rounded-xl bg-sky-50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                 {item.icon}
               </div>
 
-              <div className="text-2xl sm:text-3xl font-black text-[#002b5b] tracking-tight">
-                <AnimatedCounter
-                  target={item.targetNumber}
-                  suffix={item.suffix}
-                  duration={1600}
-                  trigger={isInView}
-                />
+              {/* Bold Stat Counter */}
+              <div className="text-2xl sm:text-3xl font-black text-[#0B2B56] tracking-tight">
+                {item.isDecimal ? (
+                  <span>4.9</span>
+                ) : (
+                  <AnimatedCounter
+                    target={item.targetNumber}
+                    suffix={item.suffix}
+                    duration={1500}
+                    trigger={isInView}
+                  />
+                )}
               </div>
 
-              <div className="text-xs sm:text-sm font-bold text-slate-600">
+              {/* Label */}
+              <div className="text-xs sm:text-sm font-semibold text-slate-600 mt-1">
                 {item.label}
               </div>
             </ScrollReveal>

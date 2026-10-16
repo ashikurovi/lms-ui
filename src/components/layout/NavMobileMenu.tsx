@@ -13,10 +13,7 @@ import {
   LayoutDashboard,
   LogIn,
   UserPlus,
-  Phone,
   MessageCircle,
-  Sparkles,
-  ExternalLink,
 } from "lucide-react";
 
 interface NavItem {

@@ -164,23 +164,30 @@ export default function FeaturedCourses() {
   return (
     <section className="bg-white transition-all pt-14 sm:pt-20 pb-16 sm:pb-24 font-sans">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-12">
-        {/* ==================== SECTION TITLE ==================== */}
-        <ScrollReveal direction="up" duration={500} className="text-center space-y-3 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-[#0077b6] text-xs font-bold tracking-wider uppercase shadow-xs">
-            <span className="w-2 h-2 rounded-full bg-[#0077b6] animate-pulse" />
-            <span>Upcoming Live Batches</span>
+        {/* ==================== SECTION TITLE (Matching Reference Image Header) ==================== */}
+        <ScrollReveal direction="up" duration={500} className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-slate-100">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 border border-sky-100 text-[#0077b6] text-xs font-bold tracking-wider uppercase">
+              <span className="w-2 h-2 rounded-full bg-[#0077b6]" />
+              <span>Specialized Training & Services</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-[#0B2B56] tracking-tight">
+              Our Services & Courses
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 max-w-2xl font-normal">
+              Industry-standard BIM modeling and workforce training across Architectural, Structural, and MEPF engineering.
+            </p>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-[#0B2B56] tracking-tight">
-            Explore All{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#0077b6] to-sky-500">
-              Live BIM Batches
-            </span>
-          </h2>
-
-          <p className="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
-            Project-based professional training with dedicated live mentorship and interactive hands-on sessions.
-          </p>
+          <div className="shrink-0">
+            <Link
+              href="/courses"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#0B2B56] text-[#0B2B56] hover:bg-[#0B2B56] hover:text-white text-xs sm:text-sm font-bold transition-all duration-200"
+            >
+              <span>Explore All Courses</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </ScrollReveal>
 
         {/* ==================== API CATEGORY TABS ==================== */}

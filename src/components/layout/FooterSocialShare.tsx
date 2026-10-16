@@ -6,36 +6,22 @@ import Link from "next/link";
 export default function FooterSocialShare() {
   return (
     <div className="lg:col-span-5 space-y-6">
-      {/* Brand Logo matching Header & Banner */}
+      {/* Brand Logo matching Header */}
       <Link href="/" className="flex items-center gap-3.5 group inline-flex">
-        <div className="relative flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
-          <svg
-            className="w-11 h-11 text-white shrink-0 drop-shadow-[0_0_10px_rgba(56,189,248,0.4)]"
-            viewBox="0 0 40 40"
-            fill="none"
-          >
-            <circle cx="20" cy="20" r="17" stroke="currentColor" strokeWidth="1.8" className="text-white/90" />
-            <ellipse cx="20" cy="20" rx="9.5" ry="17" stroke="currentColor" strokeWidth="1.4" className="text-sky-300/90" />
-            <ellipse cx="20" cy="20" rx="4.5" ry="17" stroke="currentColor" strokeWidth="1.2" className="text-sky-200/80" />
-            <line x1="20" y1="3" x2="20" y2="37" stroke="currentColor" strokeWidth="1.4" className="text-white/70" />
-            <line x1="4" y1="13" x2="36" y2="13" stroke="currentColor" strokeWidth="1.3" className="text-sky-300/80" />
-            <line x1="3" y1="20" x2="37" y2="20" stroke="currentColor" strokeWidth="1.5" className="text-white/90" />
-            <line x1="4" y1="27" x2="36" y2="27" stroke="currentColor" strokeWidth="1.3" className="text-sky-300/80" />
-            <circle cx="10.5" cy="13" r="1.5" fill="#38BDF8" />
-            <circle cx="20" cy="13" r="1.8" fill="#FFFFFF" />
-            <circle cx="29.5" cy="13" r="1.5" fill="#38BDF8" />
-            <circle cx="20" cy="20" r="2" fill="#FFFFFF" />
-            <circle cx="10.5" cy="27" r="1.5" fill="#38BDF8" />
-            <circle cx="29.5" cy="27" r="1.5" fill="#38BDF8" />
-          </svg>
+        <div className="relative w-12 h-12 rounded-xl bg-white p-1 flex items-center justify-center shadow-lg overflow-hidden shrink-0 group-hover:scale-105 transition-transform duration-300 ring-1 ring-white/20">
+          <img
+            src="/logo.png"
+            alt="BIM Build BD Logo"
+            className="w-full h-full object-contain"
+          />
         </div>
 
         <div className="flex flex-col">
           <span className="text-2xl sm:text-[26px] font-black tracking-tight text-white leading-tight">
             BIM Build BD
           </span>
-          <span className="text-xs font-semibold text-sky-200/90 tracking-wide pt-0.5">
-            A Global BiM Training Institute
+          <span className="text-xs font-semibold text-sky-300 tracking-wider pt-0.5">
+            PLAN • BUILD • DELIVER
           </span>
         </div>
       </Link>
