@@ -39,8 +39,6 @@ export default function Navbar({ isScrolled = false }: { isScrolled?: boolean })
       dropdown: [
         { name: "Student Gallery", href: "/gallery" },
         { name: "Success Stories", href: "/success-stories" },
-        { name: "Student Dashboard", href: "/dashboard" },
-        { name: "Certificate Verification", href: "/dashboard" },
       ],
     },
     {
