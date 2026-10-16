@@ -6,6 +6,14 @@ import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown, LogIn, LayoutDashboard } from "lucide-react";
 import { getAuthToken } from "@/services/api/apiClient";
 import NavMobileMenu from "./NavMobileMenu";
+import ServicesMegaMenu from "./ServicesMegaMenu";
+
+export interface NavLinkItem {
+  name: string;
+  href: string;
+  isMegaMenu?: boolean;
+  dropdown?: { name: string; href: string }[];
+}
 
 export default function Navbar({ isScrolled = false }: { isScrolled?: boolean }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -16,10 +24,15 @@ export default function Navbar({ isScrolled = false }: { isScrolled?: boolean })
     setIsLoggedIn(!!getAuthToken());
   }, []);
 
-  const navLinks = [
+  const navLinks: NavLinkItem[] = [
     { name: "HOME", href: "/" },
     { name: "COURSE OFFERED", href: "/courses" },
     { name: "PORTFOLIO", href: "/portfolio" },
+    {
+      name: "SERVICES",
+      href: "#",
+      isMegaMenu: true,
+    },
     {
       name: "STUDENT CORNER",
       href: "/gallery",
@@ -74,6 +87,29 @@ export default function Navbar({ isScrolled = false }: { isScrolled?: boolean })
           {/* Right: Navigation Links */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             {navLinks.map((item) => {
+              if (item.isMegaMenu) {
+                return (
+                  <div key={item.name} className="relative group py-5">
+                    <div
+                      className="flex items-center gap-1 text-xs xl:text-[13px] font-bold tracking-wider uppercase transition-colors duration-200 text-white/90 group-hover:text-sky-300 cursor-pointer select-none"
+                      role="button"
+                      tabIndex={0}
+                    >
+                      <span>{item.name}</span>
+                      <ChevronDown className="w-3 h-3 text-white/60 group-hover:text-sky-300 group-hover:rotate-180 transition-transform duration-200" />
+                    </div>
+
+                    {/* Hover Underline */}
+                    <span className="absolute bottom-3 left-0 h-[2px] bg-sky-400 rounded-full transition-all duration-200 w-0 group-hover:w-full" />
+
+                    {/* Mega Menu Dropdown */}
+                    <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute top-full left-1/2 -translate-x-[46%] xl:-translate-x-[40%] pt-2 w-[780px] xl:w-[860px] transition-all duration-200 z-50 transform group-hover:translate-y-0 translate-y-1 pointer-events-none group-hover:pointer-events-auto">
+                      <ServicesMegaMenu />
+                    </div>
+                  </div>
+                );
+              }
+
               const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
               return (
                 <div key={item.name} className="relative group py-5">

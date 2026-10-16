@@ -14,12 +14,15 @@ import {
   LogIn,
   UserPlus,
   MessageCircle,
+  Layers,
 } from "lucide-react";
+import { servicesData } from "./ServicesMegaMenu";
 
 interface NavItem {
   name: string;
   href: string;
   dropdown?: { name: string; href: string }[];
+  isMegaMenu?: boolean;
 }
 
 interface NavMobileMenuProps {
@@ -54,6 +57,16 @@ function getMenuMeta(name: string) {
       badge: (
         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/30">
           Projects
+        </span>
+      ),
+    };
+  }
+  if (lower.includes("service")) {
+    return {
+      icon: <Layers className="w-4 h-4 text-sky-300" />,
+      badge: (
+        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-400/20 text-sky-300 border border-sky-400/30">
+          Services
         </span>
       ),
     };
@@ -121,24 +134,37 @@ export default function NavMobileMenu({
               >
                 {/* Main Link / Header Row */}
                 <div className="flex items-center justify-between p-3.5">
-                  <Link
-                    href={item.href}
-                    onClick={() => {
-                      if (!item.dropdown) onClose();
-                    }}
-                    className="flex items-center gap-3 flex-1 text-sm font-bold tracking-wide uppercase text-slate-100 hover:text-sky-300 transition-colors"
-                  >
-                    <div className="w-8 h-8 rounded-xl bg-sky-500/15 border border-sky-400/20 flex items-center justify-center shrink-0">
-                      {icon}
-                    </div>
-                    <span>{item.name}</span>
-                  </Link>
+                  {item.isMegaMenu ? (
+                    <button
+                      type="button"
+                      onClick={() => toggleSection(item.name)}
+                      className="flex items-center gap-3 flex-1 text-sm font-bold tracking-wide uppercase text-slate-100 hover:text-sky-300 transition-colors text-left cursor-pointer"
+                    >
+                      <div className="w-8 h-8 rounded-xl bg-sky-500/15 border border-sky-400/20 flex items-center justify-center shrink-0">
+                        {icon}
+                      </div>
+                      <span>{item.name}</span>
+                    </button>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      onClick={() => {
+                        if (!item.dropdown) onClose();
+                      }}
+                      className="flex items-center gap-3 flex-1 text-sm font-bold tracking-wide uppercase text-slate-100 hover:text-sky-300 transition-colors"
+                    >
+                      <div className="w-8 h-8 rounded-xl bg-sky-500/15 border border-sky-400/20 flex items-center justify-center shrink-0">
+                        {icon}
+                      </div>
+                      <span>{item.name}</span>
+                    </Link>
+                  )}
 
                   {/* Right side: Badge or Dropdown Chevron Toggle */}
                   <div className="flex items-center gap-2 shrink-0">
                     {badge}
 
-                    {item.dropdown ? (
+                    {item.dropdown || item.isMegaMenu ? (
                       <button
                         onClick={() => toggleSection(item.name)}
                         className="p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white transition-colors cursor-pointer"
@@ -162,7 +188,7 @@ export default function NavMobileMenu({
                   </div>
                 </div>
 
-                {/* Submenu Accordion */}
+                {/* Submenu Accordion for regular dropdown */}
                 {item.dropdown && isExpanded && (
                   <div className="px-3.5 pb-3 pt-1 space-y-1.5 border-t border-white/5 bg-[#031326]/60">
                     {item.dropdown.map((sub) => (
@@ -179,6 +205,102 @@ export default function NavMobileMenu({
                         <ChevronRight className="w-3.5 h-3.5 text-white/30" />
                       </Link>
                     ))}
+                  </div>
+                )}
+
+                {/* Services Mega Menu Accordion */}
+                {item.isMegaMenu && isExpanded && (
+                  <div className="px-4 pb-4 pt-2 space-y-4 border-t border-white/5 bg-[#031326]/80 text-slate-200 text-xs">
+                    {/* BIM Services */}
+                    <div>
+                      <h4 className="font-bold text-sky-400 uppercase tracking-wider text-[11px] mb-1.5">
+                        {servicesData.column1[0].title}
+                      </h4>
+                      <ul className="space-y-1 pl-2">
+                        {servicesData.column1[0].items.map((srv) => (
+                          <li key={srv}>
+                            <span className="block py-1 text-slate-300 hover:text-sky-300 active:text-sky-300 cursor-pointer transition-colors">
+                              {srv}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Architectural Services */}
+                    <div className="border-t border-white/5 pt-3">
+                      <h4 className="font-bold text-sky-400 uppercase tracking-wider text-[11px] mb-1.5">
+                        {servicesData.column1[1].title}
+                      </h4>
+                      <ul className="space-y-1 pl-2">
+                        {servicesData.column1[1].items.map((srv) => (
+                          <li key={srv}>
+                            <span className="block py-1 text-slate-300 hover:text-sky-300 active:text-sky-300 cursor-pointer transition-colors">
+                              {srv}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Structural Services */}
+                    <div className="border-t border-white/5 pt-3">
+                      <h4 className="font-bold text-sky-400 uppercase tracking-wider text-[11px] mb-1.5">
+                        {servicesData.column2[0].title}
+                      </h4>
+                      <ul className="space-y-1 pl-2">
+                        {servicesData.column2[0].items.map((srv) => (
+                          <li key={srv}>
+                            <span className="block py-1 text-slate-300 hover:text-sky-300 active:text-sky-300 cursor-pointer transition-colors">
+                              {srv}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* 3D Visualization */}
+                    <div className="border-t border-white/5 pt-3">
+                      <h4 className="font-bold text-sky-400 uppercase tracking-wider text-[11px] mb-1.5">
+                        {servicesData.column2[1].title}
+                      </h4>
+                      <ul className="space-y-1 pl-2">
+                        {servicesData.column2[1].items.map((srv) => (
+                          <li key={srv}>
+                            <span className="block py-1 text-slate-300 hover:text-sky-300 active:text-sky-300 cursor-pointer transition-colors">
+                              {srv}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* MEPF Services */}
+                    <div className="border-t border-white/5 pt-3">
+                      <h4 className="font-bold text-sky-400 uppercase tracking-wider text-[11px] mb-2">
+                        {servicesData.column3.title}
+                      </h4>
+                      <div className="space-y-3 pl-2">
+                        {servicesData.column3.subgroups.map((grp) => (
+                          <div key={grp.subtitle} className="space-y-1">
+                            <span className="font-semibold text-white block hover:text-sky-300 cursor-pointer transition-colors">
+                              {grp.subtitle}
+                            </span>
+                            {grp.items.length > 0 && (
+                              <ul className="space-y-1 pl-2">
+                                {grp.items.map((subItem) => (
+                                  <li key={subItem}>
+                                    <span className="block py-0.5 text-slate-300 hover:text-sky-300 active:text-sky-300 cursor-pointer transition-colors">
+                                      {subItem}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
