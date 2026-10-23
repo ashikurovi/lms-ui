@@ -55,103 +55,106 @@ export default function Navbar({ isScrolled = false }: { isScrolled?: boolean })
 
   return (
     <div className="relative z-40 font-sans">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+      <div className="max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         <div
           className={`flex items-center justify-between gap-4 transition-all duration-300 ease-in-out ${
             isScrolled ? "h-16 sm:h-18" : "h-20 sm:h-22"
           }`}
         >
-          {/* 1. Left: Brand Logo */}
-          <Link href="/" className="flex items-center gap-3 group shrink-0">
-            <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white p-1 flex items-center justify-center shadow-md overflow-hidden shrink-0 group-hover:scale-105 transition-transform duration-300 ring-1 ring-white/20">
-              <img
-                src="/logo.png"
-                alt="BIM Build BD Logo"
-                className="w-full h-full object-contain"
-              />
-            </div>
+          {/* Left Block: Brand Logo + Navigation Links with Guaranteed Healthy Spacing */}
+          <div className="flex items-center gap-7 xl:gap-10 2xl:gap-14 min-w-0">
+            {/* 1. Brand Logo */}
+            <Link href="/" className="flex items-center gap-3 sm:gap-3.5 group shrink-0">
+              <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white p-1 flex items-center justify-center shadow-md overflow-hidden shrink-0 group-hover:scale-105 transition-transform duration-300 ring-1 ring-white/20">
+                <img
+                  src="/logo.png"
+                  alt="BIM Build BD Logo"
+                  className="w-full h-full object-contain"
+                />
+              </div>
 
-            {/* Brand Title & Subtitle */}
-            <div className="flex flex-col">
-              <span className="text-xl sm:text-[22px] font-black tracking-tight text-white leading-tight">
-                BIM Build BD
-              </span>
-              <span className="text-[10px] sm:text-[11px] font-bold text-sky-300 tracking-wider leading-none pt-0.5">
-                PLAN • BUILD • DELIVER
-              </span>
-            </div>
-          </Link>
+              {/* Brand Title & Subtitle */}
+              <div className="flex flex-col shrink-0">
+                <span className="text-xl sm:text-[22px] font-black tracking-tight text-white leading-tight">
+                  BIM Build BD
+                </span>
+                <span className="text-[10px] sm:text-[11px] font-bold text-sky-300 tracking-wider leading-none pt-0.5">
+                  PLAN • BUILD • DELIVER
+                </span>
+              </div>
+            </Link>
 
-          {/* 2. Center: Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-4 xl:gap-6 2xl:gap-7">
-            {navLinks.map((item) => {
-              if (item.isMegaMenu) {
-                return (
-                  <div key={item.name} className="relative group flex items-center py-2">
-                    <div
-                      className="relative flex items-center gap-1.5 text-sm xl:text-[15px] font-bold tracking-wide uppercase transition-colors duration-200 text-white/90 group-hover:text-sky-300 cursor-pointer select-none py-1"
-                      role="button"
-                      tabIndex={0}
-                    >
-                      <span>{item.name}</span>
-                      <ChevronDown className="w-3.5 h-3.5 text-white/60 group-hover:text-sky-300 group-hover:rotate-180 transition-transform duration-200" />
+            {/* 2. Navigation Links */}
+            <nav className="hidden lg:flex items-center gap-4 xl:gap-5 2xl:gap-7">
+              {navLinks.map((item) => {
+                if (item.isMegaMenu) {
+                  return (
+                    <div key={item.name} className="relative group flex items-center py-2">
+                      <div
+                        className="relative flex items-center gap-1.5 text-[13.5px] xl:text-[14.5px] font-bold tracking-wide uppercase transition-colors duration-200 text-white/90 group-hover:text-sky-300 cursor-pointer select-none py-1"
+                        role="button"
+                        tabIndex={0}
+                      >
+                        <span>{item.name}</span>
+                        <ChevronDown className="w-3.5 h-3.5 text-white/60 group-hover:text-sky-300 group-hover:rotate-180 transition-transform duration-200" />
 
-                      {/* Snug Hover Underline */}
-                      <span className="absolute -bottom-2 left-0 h-[2.5px] bg-sky-400 rounded-full transition-all duration-200 w-0 group-hover:w-full" />
-                    </div>
+                        {/* Snug Hover Underline */}
+                        <span className="absolute -bottom-1.5 left-0 h-[2.5px] bg-sky-400 rounded-full transition-all duration-200 w-0 group-hover:w-full" />
+                      </div>
 
-                    {/* Mega Menu Dropdown */}
-                    <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute top-full left-1/2 -translate-x-[42%] pt-3 w-[780px] xl:w-[860px] transition-all duration-200 z-50 transform group-hover:translate-y-0 translate-y-1 pointer-events-none group-hover:pointer-events-auto">
-                      <ServicesMegaMenu />
-                    </div>
-                  </div>
-                );
-              }
-
-              const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
-              return (
-                <div key={item.name} className="relative group flex items-center py-2">
-                  <Link
-                    href={item.href}
-                    className={`relative flex items-center gap-1.5 text-sm xl:text-[15px] font-bold tracking-wide uppercase transition-colors duration-200 py-1 ${
-                      isActive ? "text-sky-300" : "text-white/90 hover:text-sky-300"
-                    }`}
-                  >
-                    <span>{item.name}</span>
-                    {item.dropdown && (
-                      <ChevronDown className="w-3.5 h-3.5 text-white/60 group-hover:text-sky-300 group-hover:rotate-180 transition-transform duration-200" />
-                    )}
-
-                    {/* Snug Active Underline */}
-                    <span
-                      className={`absolute -bottom-2 left-0 h-[2.5px] bg-sky-400 rounded-full transition-all duration-200 ${
-                        isActive ? "w-full" : "w-0 group-hover:w-full"
-                      }`}
-                    />
-                  </Link>
-
-                  {/* Dropdown Menu */}
-                  {item.dropdown && (
-                    <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute top-full left-0 pt-3 w-64 transition-all duration-200 z-50 transform group-hover:translate-y-0 translate-y-1">
-                      <div className="bg-[#072244] border border-[#1c4d80] rounded-xl shadow-2xl py-2 backdrop-blur-xl">
-                        {item.dropdown.map((sub) => (
-                          <Link
-                            key={sub.name}
-                            href={sub.href}
-                            className="block px-4 py-2.5 text-xs sm:text-[13px] font-medium text-slate-200 hover:text-white hover:bg-[#0e3b6d] transition-colors"
-                          >
-                            {sub.name}
-                          </Link>
-                        ))}
+                      {/* Mega Menu Dropdown */}
+                      <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute top-full left-1/2 -translate-x-[42%] pt-3 w-[780px] xl:w-[860px] transition-all duration-200 z-50 transform group-hover:translate-y-0 translate-y-1 pointer-events-none group-hover:pointer-events-auto">
+                        <ServicesMegaMenu />
                       </div>
                     </div>
-                  )}
-                </div>
-              );
-            })}
-          </nav>
+                  );
+                }
 
-          {/* 3. Right: Quick Auth / Action Buttons */}
+                const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+                return (
+                  <div key={item.name} className="relative group flex items-center py-2">
+                    <Link
+                      href={item.href}
+                      className={`relative flex items-center gap-1.5 text-[13.5px] xl:text-[14.5px] font-bold tracking-wide uppercase transition-colors duration-200 py-1 ${
+                        isActive ? "text-sky-300" : "text-white/90 hover:text-sky-300"
+                      }`}
+                    >
+                      <span>{item.name}</span>
+                      {item.dropdown && (
+                        <ChevronDown className="w-3.5 h-3.5 text-white/60 group-hover:text-sky-300 group-hover:rotate-180 transition-transform duration-200" />
+                      )}
+
+                      {/* Snug Active Underline */}
+                      <span
+                        className={`absolute -bottom-1.5 left-0 h-[2.5px] bg-sky-400 rounded-full transition-all duration-200 ${
+                          isActive ? "w-full" : "w-0 group-hover:w-full"
+                        }`}
+                      />
+                    </Link>
+
+                    {/* Dropdown Menu */}
+                    {item.dropdown && (
+                      <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 absolute top-full left-0 pt-3 w-64 transition-all duration-200 z-50 transform group-hover:translate-y-0 translate-y-1">
+                        <div className="bg-[#072244] border border-[#1c4d80] rounded-xl shadow-2xl py-2 backdrop-blur-xl">
+                          {item.dropdown.map((sub) => (
+                            <Link
+                              key={sub.name}
+                              href={sub.href}
+                              className="block px-4 py-2.5 text-xs sm:text-[13px] font-medium text-slate-200 hover:text-white hover:bg-[#0e3b6d] transition-colors"
+                            >
+                              {sub.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Right Block: Action Buttons (Dashboard / Login + Explore Courses) */}
           <div className="hidden lg:flex items-center gap-2.5 xl:gap-3 shrink-0">
             {isLoggedIn ? (
               <Link
