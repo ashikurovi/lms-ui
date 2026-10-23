@@ -113,3 +113,18 @@ input, button, select, textarea, table, h1, h2, h3, h4, h5, h6, p, span, a, labe
   transform: translateY(-4px);
   box-shadow: 0 12px 24px -10px rgba(0, 43, 91, 0.12);
 }
+
+
+/* Button Shining Light Sweep Animation */
+@keyframes buttonShine {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  35%, 100% {
+    transform: translateX(250%) skewX(-20deg);
+  }
+}
+
+.animate-btn-shine {
+  animation: buttonShine 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}

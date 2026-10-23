@@ -158,10 +158,13 @@ export default function Navbar({ isScrolled = false }: { isScrolled?: boolean })
               {isLoggedIn ? (
                 <Link
                   href="/dashboard"
-                  className="h-10 px-4 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs xl:text-sm uppercase tracking-wider inline-flex items-center gap-2 shadow-sm hover:shadow-sky-500/20 transition-all shrink-0"
+                  className="relative overflow-hidden h-10 px-4 rounded-xl bg-gradient-to-r from-[#0284c7] via-[#00a8e8] to-[#0369a1] hover:from-[#0369a1] hover:to-[#0284c7] text-white font-extrabold text-xs xl:text-sm uppercase tracking-wider inline-flex items-center gap-2 shadow-md shadow-sky-500/30 hover:shadow-lg hover:shadow-sky-500/50 border border-sky-300/40 hover:scale-[1.02] active:scale-[0.98] transition-all shrink-0 group/dash"
                 >
-                  <LayoutDashboard className="w-4 h-4" />
-                  <span>Dashboard</span>
+                  {/* Shining Light Beam Sweep */}
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-btn-shine pointer-events-none" />
+
+                  <LayoutDashboard className="w-4 h-4 text-white relative z-10 transition-transform duration-200 group-hover/dash:scale-110" />
+                  <span className="relative z-10">Dashboard</span>
                 </Link>
               ) : (
                 <Link
@@ -188,9 +191,10 @@ export default function Navbar({ isScrolled = false }: { isScrolled?: boolean })
             {isLoggedIn ? (
               <Link
                 href="/dashboard"
-                className="px-3.5 py-2 rounded-xl bg-sky-500 text-white font-bold text-xs"
+                className="relative overflow-hidden px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0284c7] via-[#00a8e8] to-[#0369a1] text-white font-extrabold text-xs shadow-md shadow-sky-500/30 border border-sky-300/40"
               >
-                Dashboard
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full animate-btn-shine pointer-events-none" />
+                <span className="relative z-10">Dashboard</span>
               </Link>
             ) : (
               <Link
