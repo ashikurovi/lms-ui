@@ -158,7 +158,7 @@ export default function Navbar({ isScrolled = false }: { isScrolled?: boolean })
               {isLoggedIn ? (
                 <Link
                   href="/dashboard"
-                  className="relative overflow-hidden h-10 px-4 rounded-xl bg-gradient-to-r from-[#0070f3] via-[#0099ff] to-[#00c6ff] hover:from-[#0060df] hover:via-[#0088ee] hover:to-[#00b4f0] text-white font-extrabold text-xs xl:text-sm uppercase tracking-wider inline-flex items-center gap-2 shadow-md shadow-sky-500/35 hover:shadow-lg hover:shadow-sky-400/50 border border-cyan-300/40 hover:scale-[1.02] active:scale-[0.98] transition-all shrink-0 group/dash"
+                  className="relative overflow-hidden h-10 px-4 rounded-xl bg-gradient-to-r from-[#0070f3] via-[#0099ff] to-[#00c6ff] hover:from-[#0060df] hover:via-[#0088ee] hover:to-[#00b4f0] text-white font-extrabold text-xs xl:text-sm uppercase tracking-wider inline-flex items-center gap-2 shadow-md shadow-sky-500/35 hover:shadow-lg hover:shadow-sky-400/50 hover:scale-[1.02] active:scale-[0.98] transition-all shrink-0 group/dash"
                 >
                   {/* Shining Light Beam Sweep */}
                   <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/45 to-transparent -translate-x-full animate-btn-shine pointer-events-none" />
@@ -191,7 +191,7 @@ export default function Navbar({ isScrolled = false }: { isScrolled?: boolean })
             {isLoggedIn ? (
               <Link
                 href="/dashboard"
-                className="relative overflow-hidden px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0070f3] via-[#0099ff] to-[#00c6ff] text-white font-extrabold text-xs shadow-md shadow-sky-500/35 border border-cyan-300/40"
+                className="relative overflow-hidden px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0070f3] via-[#0099ff] to-[#00c6ff] text-white font-extrabold text-xs shadow-md shadow-sky-500/35"
               >
                 <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/45 to-transparent -translate-x-full animate-btn-shine pointer-events-none" />
                 <span className="relative z-10 font-black">Dashboard</span>
