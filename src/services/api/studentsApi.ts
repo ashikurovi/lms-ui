@@ -29,6 +29,10 @@ export interface StudentRecord {
   industrialAttachment?: boolean;
   attachmentCompany?: string;
   attachmentStatus?: string;
+  nationality?: string;
+  currentStatus?: string;
+  passingYear?: string;
+  companyName?: string;
   profileImage?: string;
   role?: string;
   user?: { id: string; name: string; email: string; isBanned?: boolean; role?: string };

@@ -13,9 +13,22 @@ function RegisterFormContent() {
   const searchParams = useSearchParams();
 
   const [formData, setFormData] = useState({
-    name: "", email: "", phone: "", password: "", confirmPassword: "",
-    roll: "", registrationNumber: "", institute: "Dhaka Polytechnic Institute",
-    technology: "Civil Technology", semester: "6", session: "2022-2023",
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    institute: "",
+    department: "",
+    currentStatus: "student",
+    nationality: "Bangladeshi",
+    passingYear: "",
+    companyName: "",
+    roll: "",
+    registrationNumber: "",
+    technology: "",
+    semester: "1",
+    session: "",
   });
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -23,7 +36,12 @@ function RegisterFormContent() {
 
   useEffect(() => {
     const p = searchParams.get("phone"), r = searchParams.get("roll"), reg = searchParams.get("reg");
-    setFormData((prev) => ({ ...prev, phone: p || prev.phone, roll: r || prev.roll, registrationNumber: reg || prev.registrationNumber }));
+    setFormData((prev) => ({
+      ...prev,
+      phone: p || prev.phone,
+      roll: r || prev.roll,
+      registrationNumber: reg || prev.registrationNumber,
+    }));
   }, [searchParams]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -47,9 +65,18 @@ function RegisterFormContent() {
 
     setLoading(true);
     try {
-      const cleanSemester = parseInt(String(formData.semester).replace(/\D/g, ""), 10) || 1;
+      const cleanSemester = parseInt(String(formData.semester || "1").replace(/\D/g, ""), 10) || 1;
       const res = await studentsApi.registerStudent({
         ...formData,
+        institute: formData.institute.trim(),
+        department: formData.department.trim(),
+        technology: formData.department.trim() || formData.technology || "General",
+        currentStatus: formData.currentStatus,
+        nationality: formData.nationality.trim(),
+        passingYear: formData.passingYear.trim(),
+        companyName: formData.companyName.trim(),
+        attachmentCompany: formData.companyName.trim(),
+        session: formData.passingYear.trim() || formData.session || "",
         semester: cleanSemester,
       });
 
@@ -87,7 +114,7 @@ function RegisterFormContent() {
           <span className="mx-2">/</span>
           <Link href={searchParams.get("redirect") ? `/login?redirect=${encodeURIComponent(searchParams.get("redirect") as string)}` : "/login"} className="hover:text-slate-600 transition-colors">Login</Link>
           <span className="mx-2">/</span>
-          <span className="text-slate-700 font-semibold">Student Account Registration</span>
+          <span className="text-slate-700 font-semibold">Account Registration</span>
         </div>
 
         <div className="max-w-3xl mx-auto w-full space-y-6">
@@ -95,10 +122,10 @@ function RegisterFormContent() {
             <div className="text-center space-y-2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100/80 text-[#0077b6] text-xs font-extrabold uppercase tracking-wider">
                 <UserPlus className="w-3.5 h-3.5" />
-                <span>Student Self-Registration Portal</span>
+                <span>Self-Registration Portal</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-[#002b5b] tracking-tight">Create Your Student Account</h1>
-              <p className="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto">Fill in your details below to register your polytechnic student profile and access online LMS courses.</p>
+              <h1 className="text-2xl sm:text-3xl font-black text-[#002b5b] tracking-tight">Create Your Account</h1>
+              <p className="text-xs sm:text-sm text-slate-500 max-w-lg mx-auto">Fill in your details below to register your personal & professional profile and access online LMS courses.</p>
             </div>
 
             {successMsg && (
