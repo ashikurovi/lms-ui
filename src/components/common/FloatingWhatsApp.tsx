@@ -12,7 +12,7 @@ export default function FloatingWhatsApp() {
   return (
     <div className="fixed bottom-6 right-6 z-50">
       <a
-        href="https://wa.me/8801879526108"
+        href="https://wa.me/8801348196498"
         target="_blank"
         rel="noopener noreferrer"
         className="w-12 h-12 rounded-full bg-[#25d366] hover:bg-[#20ba5a] text-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform cursor-pointer relative group"
@@ -27,7 +27,7 @@ export default function FloatingWhatsApp() {
 
         {/* Tooltip on hover */}
         <span className="absolute right-14 top-1/2 -translate-y-1/2 bg-slate-900 text-white text-xs font-semibold px-2.5 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-md">
-          WhatsApp Support
+          WhatsApp Support (+880 1348-196498)
         </span>
       </a>
     </div>

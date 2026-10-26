@@ -37,12 +37,12 @@ export default function DashboardSidebarFooter() {
         </div>
 
         <a
-          href="https://wa.me/8801879526108"
+          href="https://wa.me/8801348196498"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#0077b6]/20 hover:bg-[#0077b6]/30 border border-[#0077b6]/30 text-sky-300 hover:text-white transition-all text-xs font-bold group"
         >
-          <span>+880 1879-526108</span>
+          <span>+880 1348-196498</span>
           <MessageCircle className="w-3.5 h-3.5 text-emerald-400 group-hover:scale-110 transition-transform" />
         </a>
       </div>

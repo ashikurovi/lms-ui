@@ -30,13 +30,13 @@ export default function CtaBanner() {
             </Link>
 
             <a
-              href="https://wa.me/8801879526108"
+              href="https://wa.me/8801348196498"
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-sm sm:text-base border border-white/30 transition-all flex items-center gap-2"
             >
               <PhoneCall className="w-4 h-4" />
-              <span>+880 1879-526108</span>
+              <span>+880 1348-196498</span>
             </a>
           </div>
         </div>

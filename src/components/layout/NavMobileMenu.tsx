@@ -111,7 +111,7 @@ export default function NavMobileMenu({
             <span className="text-slate-300 font-medium">BIM Admission Desk:</span>
           </div>
           <a
-            href="https://wa.me/8801700000000"
+            href="https://wa.me/8801348196498"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 text-sky-300 font-bold hover:text-white transition-colors"
