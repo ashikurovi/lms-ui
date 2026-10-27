@@ -1,19 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
-import { getAuthToken } from "@/services/api/apiClient";
 import { usePathname } from "next/navigation";
 import FooterSocialShare from "./FooterSocialShare";
 import FooterPaymentPills from "./FooterPaymentPills";
 
 export default function Footer() {
   const pathname = usePathname();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    setIsLoggedIn(!!getAuthToken());
-  }, []);
 
   // Hide public footer inside dashboard
   if (pathname && pathname.startsWith("/dashboard")) {
@@ -108,23 +102,6 @@ export default function Footer() {
                   Terms & Conditions
                 </Link>
               </li>
-              <li className="pt-1">
-                {isLoggedIn ? (
-                  <Link
-                    href="/dashboard"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider transition-all"
-                  >
-                    Go to Dashboard
-                  </Link>
-                ) : (
-                  <Link
-                    href="/login"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold text-xs border border-white/20 transition-all"
-                  >
-                    Student Portal Login
-                  </Link>
-                )}
-              </li>
             </ul>
           </div>
 
@@ -136,4 +113,3 @@ export default function Footer() {
     </footer>
   );
 }
-
