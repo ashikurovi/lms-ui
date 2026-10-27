@@ -85,20 +85,10 @@ export default function FooterSocialShare() {
             rel="noopener noreferrer"
             className="w-9 h-9 rounded-lg bg-[#0088cc] flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all"
             aria-label="Share Telegram"
+            title="Telegram"
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
               <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.536-.195 1.006.128.832.942z" />
-            </svg>
-          </a>
-
-          {/* Email */}
-          <a
-            href="mailto:info@advancebim.net"
-            className="w-9 h-9 rounded-lg bg-[#ea4335] flex items-center justify-center hover:scale-110 hover:shadow-lg transition-all"
-            aria-label="Share Email"
-          >
-            <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-              <path d="M0 3v18h24v-18h-24zm21.518 2l-9.518 7.713-9.518-7.713h19.036zm-19.518 14v-11.817l10 8.104 10-8.104v11.817h-20z" />
             </svg>
           </a>
         </div>
