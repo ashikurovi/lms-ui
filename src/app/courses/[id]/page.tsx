@@ -45,32 +45,70 @@ export default function CourseDetailsPage() {
     let isMounted = true;
     (async () => {
       try {
-        const res = await batchesApi.getBatchById(id);
+        let batchData: any = null;
+        try {
+          const res = await batchesApi.getBatchById(id);
+          if (res.statusCode === 200 && res.data) {
+            batchData = res.data;
+          }
+        } catch {}
+
+        // Fallback to fetching course directly if no direct batch exists with this slug
+        if (!batchData) {
+          try {
+            const { coursesApi } = await import("@/services/api/coursesApi");
+            const cRes = await coursesApi.getCourseById(id);
+            if (cRes.statusCode === 200 && cRes.data) {
+              const activeBatch = cRes.data.batches?.[0];
+              batchData = activeBatch
+                ? {
+                    ...activeBatch,
+                    course: cRes.data,
+                  }
+                : {
+                    id: cRes.data.id,
+                    name: cRes.data.title,
+                    code: cRes.data.course_code || "LIVE",
+                    price: 16000,
+                    discount_price: 12000,
+                    status: "upcoming",
+                    mode: "online",
+                    course: cRes.data,
+                  };
+            }
+          } catch (cErr) {
+            console.error("Course fetch fallback error", cErr);
+          }
+        }
+
         if (!isMounted) return;
-        if (res.statusCode === 200 && res.data) {
-          setBatch(res.data);
+
+        if (batchData) {
+          setBatch(batchData);
 
           // Expand the first module by default
-          if (res.data.course?.modules?.[0]) {
-            const firstModId = res.data.course.modules[0].id || "mod-0";
+          if (batchData.course?.modules?.[0]) {
+            const firstModId = batchData.course.modules[0].id || "mod-0";
             setExpandedModules([firstModId]);
           }
 
           // Fetch reviews
-          const reviewRes = await reviewsApi.getAllReviews();
-          if (reviewRes.statusCode === 200 && reviewRes.data) {
-            const allReviews = reviewRes.data;
-            const batchReviews = allReviews.filter(
-              (r: any) => r.batch?.id === id || r.batch?.code === res.data?.code
-            );
-            setReviews(batchReviews);
-            if (batchReviews.length > 0) {
-              const avg =
-                batchReviews.reduce((sum: number, r: any) => sum + r.rating, 0) /
-                batchReviews.length;
-              setAvgRating(avg);
+          try {
+            const reviewRes = await reviewsApi.getAllReviews();
+            if (reviewRes.statusCode === 200 && reviewRes.data) {
+              const allReviews = reviewRes.data;
+              const batchReviews = allReviews.filter(
+                (r: any) => r.batch?.id === id || r.batch?.code === batchData?.code
+              );
+              setReviews(batchReviews);
+              if (batchReviews.length > 0) {
+                const avg =
+                  batchReviews.reduce((sum: number, r: any) => sum + r.rating, 0) /
+                  batchReviews.length;
+                setAvgRating(avg);
+              }
             }
-          }
+          } catch {}
         }
       } catch (err) {
         console.error("Failed to fetch batch details", err);
@@ -152,6 +190,13 @@ export default function CourseDetailsPage() {
   const currentPrice =
     paymentType === "full" ? discountPrice : Math.round(discountPrice / 2);
   const mentors = course.mentors || [];
+  const leadMentor = mentors[0];
+  const leadMentorName =
+    leadMentor?.user?.name ||
+    leadMentor?.name ||
+    (leadMentor?.designation ? `${leadMentor.designation}` : null);
+  const leadMentorAvatar =
+    leadMentor?.profileImage || leadMentor?.user?.avatar || "/trainer-avatar.png";
 
   const getYoutubeVideoId = (url: string) => {
     if (!url) return null;
@@ -219,6 +264,26 @@ export default function CourseDetailsPage() {
                 <Video className="w-4 h-4 text-slate-400" />
                 <span className="capitalize">{batch.mode || "Online Live"}</span>
               </span>
+              {leadMentorName && (
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("instructors")}
+                  className="flex items-center gap-2 text-slate-700 hover:text-[#0077b6] transition-colors cursor-pointer group"
+                  title="View Instructor Details"
+                >
+                  <img
+                    src={leadMentorAvatar}
+                    alt={leadMentorName}
+                    className="w-5 h-5 rounded-full object-cover border border-slate-200 group-hover:scale-110 transition-transform"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/trainer-avatar.png";
+                    }}
+                  />
+                  <span>
+                    Mentor: <strong className="text-slate-900 font-bold group-hover:text-[#0077b6]">{leadMentorName}</strong>
+                  </span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -652,6 +717,56 @@ export default function CourseDetailsPage() {
                   </button>
                 </div>
               </div>
+
+              {/* Assigned Mentors in Batch Details Card */}
+              {mentors.length > 0 && (
+                <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                      <User className="w-3.5 h-3.5 text-[#0077b6]" />
+                      <span>Batch Instructor{mentors.length > 1 ? "s" : ""}</span>
+                    </span>
+                    {mentors.length > 1 && (
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-100 text-[#0077b6]">
+                        {mentors.length} Mentors
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    {mentors.slice(0, 2).map((m: any, idx: number) => {
+                      const name =
+                        m.user?.name ||
+                        (m.user?.first_name ? `${m.user.first_name} ${m.user.last_name || ""}`.trim() : "") ||
+                        m.name ||
+                        m.designation ||
+                        "Lead Instructor";
+                      const avatar =
+                        m.profileImage || m.user?.avatar || "/trainer-avatar.png";
+                      return (
+                        <div key={m.id || idx} className="flex items-center gap-2.5">
+                          <img
+                            src={avatar}
+                            alt={name}
+                            className="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0 bg-white shadow-2xs"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = "/trainer-avatar.png";
+                            }}
+                          />
+                          <div className="min-w-0 flex-1">
+                            <div className="text-xs font-bold text-slate-900 truncate">
+                              {name}
+                            </div>
+                            <div className="text-[11px] text-[#0077b6] truncate font-semibold">
+                              {m.designation || "BIM Specialist"}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Checklist Features */}
               <ul className="space-y-2.5 text-xs text-slate-700 font-medium pt-1">
