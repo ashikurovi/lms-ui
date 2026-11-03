@@ -162,17 +162,28 @@ export default function AdminCourseDetails({ course, onBack, onEdit, onDelete }:
             <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-200 pb-2">Assigned Mentors</h3>
             {course.mentors && course.mentors.length > 0 ? (
               <div className="space-y-3">
-                {course.mentors.map((m: any, i) => (
-                  <div key={i} className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200">
-                    <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center font-bold">
-                      {m.user?.name?.charAt(0) || "M"}
+                {course.mentors.map((m: any, i) => {
+                  const mentorName = m.user?.name || m.name || (m.designation ? `${m.designation}` : "Mentor");
+                  const mentorAvatar = m.profileImage || m.user?.avatar || "/trainer-avatar.png";
+                  return (
+                    <div key={i} className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200">
+                      <div className="w-10 h-10 rounded-full overflow-hidden bg-sky-50 shrink-0 border border-slate-200">
+                        <img
+                          src={mentorAvatar}
+                          alt={mentorName}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = "/trainer-avatar.png";
+                          }}
+                        />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="font-bold text-slate-800 text-sm truncate">{mentorName}</div>
+                        <div className="text-xs text-[#0077b6] font-semibold">{m.designation || m.subject || "Mentor"}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="font-bold text-slate-800 text-sm">{m.user?.name || "Unknown Mentor"}</div>
-                      <div className="text-xs text-slate-500 font-medium">{m.designation || "Mentor"}</div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <p className="text-sm text-slate-500 font-medium text-center py-4">No mentors assigned.</p>

@@ -498,8 +498,8 @@ export default function CourseDetailsPage() {
                       >
                         <div className="w-14 h-14 rounded-full overflow-hidden bg-white ring-2 ring-slate-100 shrink-0 shadow-xs">
                           <img
-                            src={mentor.profileImage || mentor.user?.profile_image || "/trainer-avatar.png"}
-                            alt={mentor.user?.first_name || "Mentor"}
+                            src={mentor.profileImage || mentor.user?.avatar || mentor.user?.profile_image || "/trainer-avatar.png"}
+                            alt={mentor.user?.name || mentor.name || "Mentor"}
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = "/trainer-avatar.png";
                             }}
@@ -508,9 +508,11 @@ export default function CourseDetailsPage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <h4 className="text-sm font-bold text-slate-900 truncate">
-                            {mentor.user
-                              ? `${mentor.user.first_name || ""} ${mentor.user.last_name || ""}`.trim()
-                              : "Instructor"}
+                            {mentor.user?.name ||
+                              (mentor.user?.first_name ? `${mentor.user.first_name} ${mentor.user.last_name || ""}`.trim() : "") ||
+                              mentor.name ||
+                              mentor.designation ||
+                              "Lead BIM Instructor"}
                           </h4>
                           <p className="text-xs font-semibold text-[#0077b6] mt-0.5">
                             {mentor.designation || "Lead BIM Instructor"}

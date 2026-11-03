@@ -248,7 +248,7 @@ export default function TrainersPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 lg:gap-8">
             {filteredTrainers.map((mentor, idx) => {
-              const mentorName = mentor.user?.name || "Mentor Instructor";
+              const mentorName = mentor.user?.name || mentor.name || (mentor.designation ? `${mentor.designation}` : "Mentor Instructor");
               const mentorRole = mentor.designation || "Senior Mentor";
               const mentorSubject = mentor.subject || "LMS Platform";
               const mentorExp = mentor.experience

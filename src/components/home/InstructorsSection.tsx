@@ -19,15 +19,15 @@ export default function InstructorsSection() {
         if (res.statusCode === 200 && res.data?.items?.length) {
           const apiTrainers = res.data.items.map((m, idx) => ({
             id: m.id || `m-${idx}`,
-            name: m.user?.name || "Senior Mentor",
-            role: m.designation,
-            organization: m.subject || "LMS Platform",
+            name: m.user?.name || m.name || (m.designation ? `${m.designation}` : "Senior Mentor"),
+            role: m.designation || "Senior BIM Specialist",
+            organization: m.subject || "BIM Build BD",
             experience: m.experience || "5+ Years",
             bio: m.bio || "Certified mentor with industry experience.",
             studentsCount: 1200,
             coursesCount: 3,
             image: m.profileImage || "/trainer-avatar.png",
-            specialties: m.skills?.length ? m.skills.slice(0, 3) : ["Web Dev", "Full Stack"],
+            specialties: m.skills?.length ? m.skills.slice(0, 3) : ["BIM Coordination", "Revit Architecture"],
           }));
           setTrainers(apiTrainers);
         }

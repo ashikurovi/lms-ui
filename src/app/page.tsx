@@ -3,6 +3,7 @@ import HeroSection from "@/components/home/HeroSection";
 import ArchitectingSuccessSection from "@/components/home/ArchitectingSuccessSection";
 import AutoSwipingVideoSection from "@/components/home/AutoSwipingVideoSection";
 import FeaturedCourses from "@/components/home/FeaturedCourses";
+import InstructorsSection from "@/components/home/InstructorsSection";
 import StartToSuccess from "@/components/home/StartToSuccess";
 import HowWeWorkSection from "@/components/home/HowWeWorkSection";
 import RecentPortfolioSection from "@/components/home/RecentPortfolioSection";
@@ -35,6 +36,9 @@ export default function HomePage() {
 
       {/* 3. Our Services & Specialized Courses (3D BIM Course Cards) */}
       <FeaturedCourses />
+
+      {/* Expert Instructors & Mentors */}
+      <InstructorsSection />
 
       {/* 4. Why Choose Us (6 Metric Counters with Clean Outline Icons) */}
       <StartToSuccess />

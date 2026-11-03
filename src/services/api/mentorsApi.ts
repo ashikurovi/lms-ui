@@ -13,6 +13,7 @@ export interface MentorUser {
 
 export interface MentorItem {
   id: string;
+  name?: string;
   designation: string;
   subject: string;
   bio?: string;
