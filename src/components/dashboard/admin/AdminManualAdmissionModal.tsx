@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { UserPlus, X, CheckCircle2, AlertCircle } from "lucide-react";
+import { UserPlus, X, CheckCircle2, AlertCircle, CreditCard } from "lucide-react";
+import Select from "react-select";
 import { PendingApproval } from "@/types/dashboard";
 import { useIsMounted } from "@/hooks/useIsMounted";
 
@@ -11,6 +12,16 @@ interface AdminManualAdmissionModalProps {
   onClose: () => void;
   onEnroll: (approval: PendingApproval) => void;
 }
+
+const paymentMethodOptions = [
+  { value: "bKash", label: "bKash" },
+  { value: "Nagad", label: "Nagad" },
+  { value: "Rocket", label: "Rocket" },
+  { value: "Upay", label: "Upay" },
+  { value: "Bank Transfer", label: "Bank Transfer" },
+  { value: "Cash", label: "Cash / Direct Handover" },
+  { value: "Other", label: "Other / Manual" },
+];
 
 export default function AdminManualAdmissionModal({
   isOpen,
@@ -26,7 +37,8 @@ export default function AdminManualAdmissionModal({
     batch_id: "",
     total_amount: "",
     paid_amount: "",
-    transaction_id: ""
+    transaction_id: "",
+    payment_method: "bKash",
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,6 +46,14 @@ export default function AdminManualAdmissionModal({
   useEffect(() => {
     if (isOpen) {
       fetchData();
+      setForm({
+        student_id: "",
+        batch_id: "",
+        total_amount: "",
+        paid_amount: "",
+        transaction_id: "",
+        payment_method: "bKash",
+      });
     }
   }, [isOpen]);
 
@@ -68,10 +88,63 @@ export default function AdminManualAdmissionModal({
     setForm((prev) => ({ ...prev, batch_id: batchId, total_amount: defaultPrice }));
   };
 
+  const studentOptions = students.map((s) => ({
+    value: s.id,
+    label: `${s.name || "Unnamed"} (${s.phone || s.email || "No contact"})`,
+    student: s,
+  }));
+
+  const batchOptions = batches.map((b) => {
+    const courseTitle = b.course?.title || b.name || "Course";
+    const price = b.discount_price || b.price || 0;
+    return {
+      value: b.id,
+      label: `${b.name} (${courseTitle}) — ৳${price.toLocaleString()}`,
+      batch: b,
+    };
+  });
+
+  const customSelectStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      minHeight: "44px",
+      borderRadius: "0.75rem",
+      backgroundColor: "#f8fafc",
+      borderColor: state.isFocused ? "#0077b6" : "#e2e8f0",
+      boxShadow: state.isFocused ? "0 0 0 2px rgba(0, 119, 182, 0.2)" : "none",
+      "&:hover": {
+        borderColor: "#0077b6",
+      },
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: state.isSelected ? "#0077b6" : state.isFocused ? "#e0f2fe" : "transparent",
+      color: state.isSelected ? "#ffffff" : "#1e293b",
+      cursor: "pointer",
+      fontSize: "0.875rem",
+      fontWeight: state.isSelected ? "600" : "500",
+    }),
+    singleValue: (base: any) => ({
+      ...base,
+      color: "#0f172a",
+      fontWeight: "600",
+      fontSize: "0.875rem",
+    }),
+    placeholder: (base: any) => ({
+      ...base,
+      color: "#94a3b8",
+      fontSize: "0.875rem",
+    }),
+    menuPortal: (base: any) => ({
+      ...base,
+      zIndex: 999999,
+    }),
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.student_id || !form.batch_id || !form.paid_amount) {
-      alert("Please fill out required fields.");
+      alert("Please select a student, batch and enter paid amount.");
       return;
     }
     
@@ -84,6 +157,7 @@ export default function AdminManualAdmissionModal({
         total_amount: Number(form.total_amount),
         paid_amount: Number(form.paid_amount),
         transaction_id: form.transaction_id || undefined,
+        payment_method: form.payment_method || "bKash",
       };
       
       const res = await enrollmentsApi.manualEnrollment(payload);
@@ -103,20 +177,20 @@ export default function AdminManualAdmissionModal({
         phone: st?.phone || "N/A",
         course: ba?.course?.title || ba?.name || "Course",
         batch: ba?.name || "Batch",
-        method: "Manual TrxID",
-        amount: `৳${form.paid_amount}`,
-        totalFee: `৳${form.total_amount || 0}`,
-        advancePaid: `৳${form.paid_amount}`,
-        dueAmount: `৳${Math.max(0, Number(form.total_amount) - Number(form.paid_amount))}`,
-        trxId: form.transaction_id,
+        method: form.payment_method || "Manual TrxID",
+        amount: `৳${Number(form.paid_amount).toLocaleString()}`,
+        totalFee: `৳${(Number(form.total_amount) || 0).toLocaleString()}`,
+        advancePaid: `৳${Number(form.paid_amount).toLocaleString()}`,
+        dueAmount: `৳${Math.max(0, Number(form.total_amount) - Number(form.paid_amount)).toLocaleString()}`,
+        trxId: form.transaction_id || `MANUAL-${Date.now().toString().slice(-6)}`,
         note: "",
         status: "Approved",
       });
       
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Failed to enroll manually");
+      alert(err?.message || "Failed to enroll manually");
     } finally {
       setIsSubmitting(false);
     }
@@ -148,76 +222,102 @@ export default function AdminManualAdmissionModal({
             <span className={`px-3 py-1 rounded-full font-semibold font-bold text-xs shrink-0 ${
               due > 0 ? "bg-amber-200/80 text-amber-950" : "bg-emerald-200/80 text-emerald-950"
             }`}>
-              {due > 0 ? `Remaining Due (পাবো): ৳${due.toLocaleString()}` : "Fully Paid (100%)"}
+              {due > 0 ? `Remaining Due: ৳${due.toLocaleString()}` : "Fully Paid (100%)"}
             </span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4 text-sm mt-4">
           <div>
-            <label className="block font-bold text-slate-700 mb-1">Select Student <span className="text-rose-500">*</span></label>
-            <select 
-              required 
-              value={form.student_id} 
-              onChange={(e) => update("student_id", e.target.value)} 
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#0077b6] focus:outline-none"
-            >
-              <option value="">-- Choose Student --</option>
-              {students.map((s) => (
-                <option key={s.id} value={s.id}>{s.name} ({s.phone || s.email})</option>
-              ))}
-            </select>
+            <label className="block font-bold text-slate-700 mb-1.5">
+              Select Student <span className="text-rose-500">*</span>
+            </label>
+            <Select
+              options={studentOptions}
+              value={studentOptions.find((o) => o.value === form.student_id) || null}
+              onChange={(opt: any) => update("student_id", opt ? opt.value : "")}
+              placeholder="Search by name, phone or email..."
+              isClearable
+              isSearchable
+              styles={customSelectStyles}
+              menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+            />
           </div>
 
           <div>
-            <label className="block font-bold text-slate-700 mb-1">Select Batch <span className="text-rose-500">*</span></label>
-            <select 
-              required 
-              value={form.batch_id} 
-              onChange={(e) => handleBatchChange(e.target.value)} 
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#0077b6] focus:outline-none"
-            >
-              <option value="">-- Choose Batch --</option>
-              {batches.map((b) => (
-                <option key={b.id} value={b.id}>{b.name} ({b.course?.title || ""})</option>
-              ))}
-            </select>
+            <label className="block font-bold text-slate-700 mb-1.5">
+              Select Batch <span className="text-rose-500">*</span>
+            </label>
+            <Select
+              options={batchOptions}
+              value={batchOptions.find((o) => o.value === form.batch_id) || null}
+              onChange={(opt: any) => handleBatchChange(opt ? opt.value : "")}
+              placeholder="Search batch by name or course..."
+              isClearable
+              isSearchable
+              styles={customSelectStyles}
+              menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+            />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-bold text-slate-700 mb-1">Total Course Fee (৳) <span className="text-rose-500">*</span></label>
+              <label className="block font-bold text-slate-700 mb-1.5">
+                Total Course Fee (৳) <span className="text-rose-500">*</span>
+              </label>
               <input 
                 type="number" 
                 required 
                 placeholder="e.g. 5000" 
                 value={form.total_amount} 
                 onChange={(e) => update("total_amount", e.target.value)} 
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#0077b6] focus:outline-none font-bold" 
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#0077b6] focus:outline-none font-bold h-[44px]" 
               />
             </div>
             <div>
-              <label className="block font-bold text-slate-700 mb-1">Paid Amount (৳) <span className="text-rose-500">*</span></label>
+              <label className="block font-bold text-slate-700 mb-1.5">
+                Paid Amount (৳) <span className="text-rose-500">*</span>
+              </label>
               <input 
                 type="number" 
                 required 
                 placeholder="e.g. 1000" 
                 value={form.paid_amount} 
                 onChange={(e) => update("paid_amount", e.target.value)} 
-                className="w-full px-3.5 py-2.5 rounded-xl bg-amber-50 border border-amber-200 focus:bg-white focus:border-[#0077b6] focus:outline-none font-bold text-amber-900" 
+                className="w-full px-3.5 py-2.5 rounded-xl bg-amber-50 border border-amber-200 focus:bg-white focus:border-[#0077b6] focus:outline-none font-bold text-amber-900 h-[44px]" 
               />
             </div>
           </div>
 
-          <div>
-            <label className="block font-bold text-slate-700 mb-1">Transaction ID</label>
-            <input 
-              type="text" 
-              placeholder="e.g. CASH-REC-001" 
-              value={form.transaction_id} 
-              onChange={(e) => update("transaction_id", e.target.value)} 
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#0077b6] uppercase font-semibold focus:outline-none" 
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                <CreditCard className="w-3.5 h-3.5 text-[#0077b6]" />
+                Payment Method <span className="text-rose-500">*</span>
+              </label>
+              <Select
+                options={paymentMethodOptions}
+                value={paymentMethodOptions.find((o) => o.value === form.payment_method) || paymentMethodOptions[0]}
+                onChange={(opt: any) => update("payment_method", opt ? opt.value : "bKash")}
+                placeholder="Select method..."
+                isSearchable={false}
+                styles={customSelectStyles}
+                menuPortalTarget={typeof document !== "undefined" ? document.body : null}
+              />
+            </div>
+
+            <div>
+              <label className="block font-bold text-slate-700 mb-1.5">
+                Transaction ID {form.payment_method === "Cash" ? "(Optional)" : ""}
+              </label>
+              <input 
+                type="text" 
+                placeholder={form.payment_method === "Cash" ? "e.g. CASH-HANDOVER" : "e.g. TrxID / Ref No"} 
+                value={form.transaction_id} 
+                onChange={(e) => update("transaction_id", e.target.value)} 
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#0077b6] uppercase font-semibold focus:outline-none h-[44px]" 
+              />
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">

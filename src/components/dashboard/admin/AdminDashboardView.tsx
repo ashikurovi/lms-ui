@@ -68,11 +68,19 @@ export default function AdminDashboardView({ adminTab, setAdminTab }: { adminTab
             const paid = Number(e.paid_amount) || 0;
             const due = Math.max(0, total - paid);
             
+            const firstPayment = (e as any).installments?.[0]?.payments?.[0];
+            let methodLabel = e.paid_amount ? `Direct (৳${paid})` : "Manual Entry";
+            if (firstPayment?.transaction_id?.includes(" - ")) {
+              methodLabel = firstPayment.transaction_id.split(" - ")[0];
+            } else if (firstPayment?.gateway === "MANUAL") {
+              methodLabel = "Manual TrxID";
+            }
+
             return {
               id: e.id,
               name: e.student?.name || "Student",
               course: e.batch?.course?.title || e.batch?.name || "BIM Engineering Course",
-              method: e.paid_amount ? `Direct (৳${paid})` : "Manual Entry",
+              method: methodLabel,
               amount: `৳${(paid || total).toLocaleString()}`,
               phone: e.student?.phone || "N/A",
               status: e.status?.toLowerCase() === "active" ? "Approved" : e.status?.toLowerCase() === "cancelled" ? "Rejected" : "Pending",
