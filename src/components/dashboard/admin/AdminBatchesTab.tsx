@@ -6,6 +6,7 @@ import AdminAddBatchView from "./AdminAddBatchView";
 import AdminBatchDetails from "./AdminBatchDetails";
 import AdminEditBatchModal from "./AdminEditBatchModal";
 import AdminDeleteConfirmModal from "./AdminDeleteConfirmModal";
+import AdminAlertModal, { AlertModalType } from "./AdminAlertModal";
 import { batchesApi, BatchItem, CreateBatchPayload } from "@/services/api/batchesApi";
 
 export default function AdminBatchesTab() {
@@ -16,6 +17,21 @@ export default function AdminBatchesTab() {
   const [search, setSearch] = useState("");
   const [editingBatch, setEditingBatch] = useState<BatchItem | null>(null);
   const [deletingBatch, setDeletingBatch] = useState<BatchItem | null>(null);
+
+  const [alertModal, setAlertModal] = useState<{
+    isOpen: boolean;
+    type: AlertModalType;
+    title: string;
+    message: string;
+    statusCode?: number | string;
+    confirmText?: string;
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    type: "info",
+    title: "",
+    message: "",
+  });
 
   const fetchBatches = async () => {
     setLoading(true);
@@ -35,31 +51,71 @@ export default function AdminBatchesTab() {
     fetchBatches();
   }, [search]);
 
-  const handleCreateBatch = async (newBatch: CreateBatchPayload) => {
-    try {
-      const res = await batchesApi.createBatch(newBatch);
-      if (res.statusCode === 201 || res.statusCode === 200) {
-        alert(`Successfully launched ${newBatch.name} (${newBatch.code})!`);
-        fetchBatches();
-      } else {
-        alert("Failed: " + res.message);
-      }
-    } catch (err: any) {
-      alert("Error: " + err.message);
-    }
+  const handleCreateBatch = (newBatch: CreateBatchPayload) => {
+    fetchBatches();
+    setIsAddingBatch(false);
   };
 
   const handleUpdateBatch = async (id: string, payload: Partial<CreateBatchPayload>) => {
-    await batchesApi.updateBatch(id, payload);
-    fetchBatches();
+    try {
+      const res = await batchesApi.updateBatch(id, payload);
+      if (res.statusCode >= 400) {
+        throw new Error(res.message || res.error || "Failed to update batch");
+      }
+      fetchBatches();
+      setAlertModal({
+        isOpen: true,
+        type: "success",
+        statusCode: res.statusCode || 200,
+        title: "Batch Updated Successfully",
+        message: `Batch details have been saved. Code: ${res.data?.code || payload.code || "Updated"}`,
+        confirmText: "OK",
+        onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+      });
+    } catch (err: any) {
+      setAlertModal({
+        isOpen: true,
+        type: "error",
+        statusCode: 400,
+        title: "Update Failed",
+        message: err?.message || "Could not update batch.",
+        confirmText: "Dismiss",
+        onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+      });
+      throw err;
+    }
   };
 
   const handleDeleteBatchConfirm = async () => {
     if (!deletingBatch) return;
-    await batchesApi.deleteBatch(deletingBatch.id);
-    fetchBatches();
-    if (selectedBatchId === deletingBatch.id) {
-      setSelectedBatchId(null);
+    try {
+      const res = await batchesApi.deleteBatch(deletingBatch.id);
+      fetchBatches();
+      if (selectedBatchId === deletingBatch.id) {
+        setSelectedBatchId(null);
+      }
+      const deletedName = deletingBatch.name;
+      const deletedCode = deletingBatch.code;
+      setDeletingBatch(null);
+      setAlertModal({
+        isOpen: true,
+        type: "success",
+        statusCode: res.statusCode || 200,
+        title: "Batch Deleted Successfully",
+        message: `Batch "${deletedName}" (${deletedCode}) has been removed.`,
+        confirmText: "OK",
+        onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+      });
+    } catch (err: any) {
+      setAlertModal({
+        isOpen: true,
+        type: "error",
+        statusCode: 500,
+        title: "Delete Failed",
+        message: err?.message || "An error occurred while deleting the batch.",
+        confirmText: "Dismiss",
+        onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+      });
     }
   };
 
@@ -85,6 +141,16 @@ export default function AdminBatchesTab() {
           message="Are you sure you want to delete this batch? All enrollments and class records will be affected."
           onClose={() => setDeletingBatch(null)}
           onConfirm={handleDeleteBatchConfirm}
+        />
+        <AdminAlertModal
+          isOpen={alertModal.isOpen}
+          type={alertModal.type}
+          title={alertModal.title}
+          message={alertModal.message}
+          statusCode={alertModal.statusCode}
+          confirmText={alertModal.confirmText}
+          onClose={() => setAlertModal((p) => ({ ...p, isOpen: false }))}
+          onConfirm={alertModal.onConfirm}
         />
       </>
     );
@@ -206,6 +272,17 @@ export default function AdminBatchesTab() {
         message="Are you sure you want to delete this batch? All enrollments and class records will be affected."
         onClose={() => setDeletingBatch(null)}
         onConfirm={handleDeleteBatchConfirm}
+      />
+
+      <AdminAlertModal
+        isOpen={alertModal.isOpen}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+        statusCode={alertModal.statusCode}
+        confirmText={alertModal.confirmText}
+        onClose={() => setAlertModal((p) => ({ ...p, isOpen: false }))}
+        onConfirm={alertModal.onConfirm}
       />
     </div>
   );

@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { Layers, ArrowLeft } from "lucide-react";
-import { CreateBatchPayload } from "@/services/api/batchesApi";
+import { batchesApi, CreateBatchPayload } from "@/services/api/batchesApi";
 import { coursesApi } from "@/services/api/coursesApi";
+import AdminAlertModal, { AlertModalType } from "./AdminAlertModal";
 
 interface AdminAddBatchViewProps {
   onBack: () => void;
-  onAdd: (batch: CreateBatchPayload) => Promise<void>;
+  onAdd: (batch: CreateBatchPayload) => void | Promise<void>;
 }
 
 export default function AdminAddBatchView({
@@ -36,6 +37,22 @@ export default function AdminAddBatchView({
   
   const [loading, setLoading] = useState(false);
 
+  // Alert Modal State
+  const [alertModal, setAlertModal] = useState<{
+    isOpen: boolean;
+    type: AlertModalType;
+    title: string;
+    message: string;
+    statusCode?: number | string;
+    confirmText?: string;
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    type: "info",
+    title: "",
+    message: "",
+  });
+
   useEffect(() => {
     coursesApi.getAllCourses({ limit: 100 }).then((res) => {
       if (res.statusCode === 200 && res.data?.items) {
@@ -46,12 +63,102 @@ export default function AdminAddBatchView({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!form.course_id) {
+      setAlertModal({
+        isOpen: true,
+        type: "warning",
+        title: "Course Selection Required",
+        message: "Please select a course for this batch before proceeding.",
+        confirmText: "OK",
+        onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+      });
+      return;
+    }
+
+    if (!form.name.trim() || !form.code.trim()) {
+      setAlertModal({
+        isOpen: true,
+        type: "warning",
+        title: "Batch Name & Code Required",
+        message: "Please enter both a batch name and a batch code.",
+        confirmText: "OK",
+        onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+      });
+      return;
+    }
+
     setLoading(true);
     try {
-      await onAdd(form);
-      onBack();
-    } catch (err) {
-      console.error(err);
+      const res = await batchesApi.createBatch(form);
+      if (res.statusCode === 201 || res.statusCode === 200) {
+        const savedCode = res.data?.code || form.code;
+        const wasAutoIncremented = savedCode !== form.code;
+
+        setAlertModal({
+          isOpen: true,
+          type: "success",
+          statusCode: res.statusCode,
+          title: "Batch Launched Successfully!",
+          message: wasAutoIncremented
+            ? `Batch "${form.name}" launched successfully! The code "${form.code}" was already taken, so it was automatically made unique as "${savedCode}".`
+            : res.message ||
+              `The batch "${form.name}" (${savedCode}) has been successfully created and launched.`,
+          confirmText: "View Batches",
+          onConfirm: () => {
+            setAlertModal((p) => ({ ...p, isOpen: false }));
+            onAdd({ ...form, code: savedCode });
+            onBack();
+          },
+        });
+      } else {
+        const rawMsg = Array.isArray(res.message)
+          ? res.message.join("\n")
+          : res.message || res.error || "Unable to create batch.";
+
+        const isDuplicateCode =
+          res.statusCode === 409 ||
+          rawMsg.toLowerCase().includes("code") ||
+          rawMsg.toLowerCase().includes("slug") ||
+          rawMsg.toLowerCase().includes("already taken") ||
+          rawMsg.toLowerCase().includes("already exists") ||
+          rawMsg.toLowerCase().includes("duplicate key");
+
+        setAlertModal({
+          isOpen: true,
+          type: isDuplicateCode ? "warning" : "error",
+          statusCode: res.statusCode || (isDuplicateCode ? 409 : 400),
+          title: isDuplicateCode ? "Duplicate Batch Code" : "Batch Creation Failed",
+          message: isDuplicateCode
+            ? (rawMsg.toLowerCase().includes("already taken") || rawMsg.toLowerCase().includes("already exists")
+                ? rawMsg
+                : `The batch code "${form.code}" is already in use. Please enter a different code or modify the batch name.`)
+            : rawMsg,
+          confirmText: isDuplicateCode ? "Change Code & Retry" : "Dismiss & Review",
+          onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+        });
+      }
+    } catch (err: any) {
+      const errMsg = err?.message || "";
+      const isDuplicateCode =
+        err?.statusCode === 409 ||
+        errMsg.toLowerCase().includes("code") ||
+        errMsg.toLowerCase().includes("slug") ||
+        errMsg.toLowerCase().includes("already taken") ||
+        errMsg.toLowerCase().includes("already exists") ||
+        errMsg.toLowerCase().includes("duplicate key");
+
+      setAlertModal({
+        isOpen: true,
+        type: isDuplicateCode ? "warning" : "error",
+        statusCode: err?.statusCode || (isDuplicateCode ? 409 : 500),
+        title: isDuplicateCode ? "Duplicate Batch Code" : "Submission Error",
+        message: isDuplicateCode
+          ? `The batch code "${form.code}" is already taken by another batch. Please choose a different code.`
+          : errMsg || "An unexpected server or network error occurred while submitting the batch.",
+        confirmText: isDuplicateCode ? "Change Code & Retry" : "Dismiss",
+        onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+      });
     } finally {
       setLoading(false);
     }
@@ -99,6 +206,7 @@ export default function AdminAddBatchView({
             <div>
               <label className="font-bold text-slate-700 block mb-1.5">Batch Code *</label>
               <input type="text" required placeholder="e.g. FSWD-B1" value={form.code} onChange={(e) => update("code", e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 focus:border-[#0077b6] uppercase font-bold focus:outline-none" />
+              <p className="text-[11px] text-slate-400 mt-1">Unique batch identifier (automatically made unique if already in use)</p>
             </div>
           </div>
         </div>
@@ -185,6 +293,18 @@ export default function AdminAddBatchView({
           </button>
         </div>
       </form>
+
+      {/* Alert Modal */}
+      <AdminAlertModal
+        isOpen={alertModal.isOpen}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+        statusCode={alertModal.statusCode}
+        confirmText={alertModal.confirmText}
+        onClose={() => setAlertModal((p) => ({ ...p, isOpen: false }))}
+        onConfirm={alertModal.onConfirm}
+      />
     </div>
   );
 }

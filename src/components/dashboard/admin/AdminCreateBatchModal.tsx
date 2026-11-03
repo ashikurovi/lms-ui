@@ -7,7 +7,7 @@ import { CreateBatchPayload } from "@/services/api/batchesApi";
 interface AdminCreateBatchModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreate: (batch: CreateBatchPayload) => Promise<void>;
+  onCreate: (batch: CreateBatchPayload) => void | Promise<void>;
 }
 
 export default function AdminCreateBatchModal({

@@ -106,24 +106,7 @@ export default function AdminDashboardView({ adminTab, setAdminTab }: { adminTab
   };
 
   const handleLaunchBatch = async (newBatch: CreateBatchPayload) => {
-    try {
-      const { batchesApi } = await import("@/services/api/batchesApi");
-      await batchesApi.createBatch({
-        course_id: newBatch.course_id,
-        name: newBatch.name,
-        code: newBatch.code,
-        capacity: newBatch.capacity,
-        mode: newBatch.mode,
-        class_type: newBatch.class_type,
-        price: newBatch.price,
-        discount_price: newBatch.discount_price,
-        start_date: newBatch.start_date,
-        end_date: newBatch.end_date,
-        registration_start: newBatch.registration_start,
-        registration_end: newBatch.registration_end,
-      });
-    } catch { }
-    alert(`Batch ${newBatch.name} (${newBatch.code}) launched!`);
+    setIsCreateBatchModalOpen(false);
   };
 
   return (
