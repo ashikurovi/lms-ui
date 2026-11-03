@@ -22,14 +22,11 @@ import {
 import ScrollReveal from "@/components/common/ScrollReveal";
 import { mentorsApi, MentorItem } from "@/services/api/mentorsApi";
 
-// High quality professional fallback avatars when mentors have no uploaded image or invalid test URLs
+// Default professional avatar for trainers
+const DEFAULT_TRAINER_AVATAR = "/trainer-avatar.png";
+
 const AVATAR_FALLBACKS = [
-  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&auto=format&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=500&auto=format&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&auto=format&fit=crop&q=80",
+  "/trainer-avatar.png",
 ];
 
 function getInitials(name: string): string {

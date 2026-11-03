@@ -497,17 +497,14 @@ export default function CourseDetailsPage() {
                         className="flex items-start gap-3.5 p-4 rounded-xl border border-slate-200/80 bg-slate-50/50"
                       >
                         <div className="w-14 h-14 rounded-full overflow-hidden bg-white ring-2 ring-slate-100 shrink-0 shadow-xs">
-                          {mentor.profileImage || mentor.user?.profile_image ? (
-                            <img
-                              src={mentor.profileImage || mentor.user?.profile_image}
-                              alt={mentor.user?.first_name || "Mentor"}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100">
-                              <User className="w-6 h-6" />
-                            </div>
-                          )}
+                          <img
+                            src={mentor.profileImage || mentor.user?.profile_image || "/trainer-avatar.png"}
+                            alt={mentor.user?.first_name || "Mentor"}
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = "/trainer-avatar.png";
+                            }}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                         <div className="min-w-0 flex-1">
                           <h4 className="text-sm font-bold text-slate-900 truncate">

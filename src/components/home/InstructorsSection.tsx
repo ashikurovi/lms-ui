@@ -26,7 +26,7 @@ export default function InstructorsSection() {
             bio: m.bio || "Certified mentor with industry experience.",
             studentsCount: 1200,
             coursesCount: 3,
-            image: m.profileImage || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80",
+            image: m.profileImage || "/trainer-avatar.png",
             specialties: m.skills?.length ? m.skills.slice(0, 3) : ["Web Dev", "Full Stack"],
           }));
           setTrainers(apiTrainers);

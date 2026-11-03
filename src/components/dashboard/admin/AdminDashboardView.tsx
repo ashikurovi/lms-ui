@@ -28,6 +28,31 @@ import AdminReviewsTab from "./AdminReviewsTab";
 import AdminNoticesTab from "./AdminNoticesTab";
 import AdminContactsTab from "./AdminContactsTab";
 
+const TAB_LABELS: Record<string, string> = {
+  overview: "Dashboard Overview",
+  admissions: "Admissions & Payments",
+  students: "Students Directory",
+  instructors: "Trainers & Mentors",
+  categories: "Course Categories",
+  courses: "All Courses",
+  batches: "Batches",
+  modules: "Modules",
+  lessons: "Lessons",
+  assignments: "Assignments",
+  resources: "Resources",
+  certificates: "Certificates",
+  coupons: "Coupons",
+  revenue: "Financial Reports",
+  settings: "System Settings",
+  blogs: "Blogs & Articles",
+  galleries: "Photo Galleries",
+  portfolios: "Student Portfolios",
+  walkthroughs: "Live BIM Walkthroughs",
+  reviews: "Student Reviews",
+  notices: "Notices & Announcements",
+  contacts: "Contact Messages",
+};
+
 export default function AdminDashboardView({ adminTab, setAdminTab }: { adminTab: AdminDashboardTab; setAdminTab: (tab: AdminDashboardTab) => void }) {
   const [isCreateBatchModalOpen, setIsCreateBatchModalOpen] = useState(false);
   const [pendingApprovals, setPendingApprovals] = useState<PendingApproval[]>([]);
@@ -102,7 +127,28 @@ export default function AdminDashboardView({ adminTab, setAdminTab }: { adminTab
   };
 
   return (
-    <div key={adminTab} className="animate-fade-in-up space-y-8 font-sans">
+    <div key={adminTab} className="animate-fade-in-up space-y-6 font-sans">
+      {/* Top Breadcrumb & Status */}
+      <div className="flex items-center justify-between pb-3 border-b border-slate-200/70 text-xs text-slate-500 font-medium">
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setAdminTab("overview")}
+            className="hover:text-[#0077b6] transition-colors cursor-pointer"
+          >
+            Admin Console
+          </button>
+          <span className="text-slate-300">/</span>
+          <span className="font-bold text-slate-900">
+            {TAB_LABELS[adminTab] || adminTab}
+          </span>
+        </div>
+        <div className="hidden sm:flex items-center gap-2 text-[11px] text-slate-400 font-medium">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Super Admin Mode</span>
+        </div>
+      </div>
+
       {adminTab === "overview" && (
         <AdminOverviewTab pendingApprovals={pendingApprovals} onApprove={handleApprove} onReject={handleReject} onNavigateToAdmissions={() => setAdminTab("admissions")} onOpenCreateBatch={() => setIsCreateBatchModalOpen(true)} />
       )}

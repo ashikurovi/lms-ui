@@ -1,20 +1,19 @@
 import React from "react";
 import HeroSection from "@/components/home/HeroSection";
-import RecentBlogsSection from "@/components/home/RecentBlogsSection";
-import RecentPortfolioSection from "@/components/home/RecentPortfolioSection";
-import FeaturedWalkthroughsSection from "@/components/home/FeaturedWalkthroughsSection";
-import RecentGalleriesSection from "@/components/home/RecentGalleriesSection";
+import ArchitectingSuccessSection from "@/components/home/ArchitectingSuccessSection";
+import AutoSwipingVideoSection from "@/components/home/AutoSwipingVideoSection";
 import FeaturedCourses from "@/components/home/FeaturedCourses";
 import StartToSuccess from "@/components/home/StartToSuccess";
 import HowWeWorkSection from "@/components/home/HowWeWorkSection";
+import RecentPortfolioSection from "@/components/home/RecentPortfolioSection";
 import IndustriesSection from "@/components/home/IndustriesSection";
 import SoftwareExpertiseSection from "@/components/home/SoftwareExpertiseSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import FaqSection from "@/components/home/FaqSection";
+import RecentBlogsSection from "@/components/home/RecentBlogsSection";
+import RecentGalleriesSection from "@/components/home/RecentGalleriesSection";
 import CommunityCards from "@/components/home/CommunityCards";
 import NoticePopup from "@/components/home/NoticePopup";
-import ArchitectingSuccessSection from "@/components/home/ArchitectingSuccessSection";
-import AutoSwipingVideoSection from "@/components/home/AutoSwipingVideoSection";
 
 export default function HomePage() {
   return (
@@ -37,19 +36,7 @@ export default function HomePage() {
       {/* 3. Our Services & Specialized Courses (3D BIM Course Cards) */}
       <FeaturedCourses />
 
-      {/* 2. Recent Engineering & BIM Blogs */}
-      <RecentBlogsSection />
-
-      {/* 3. Recent Projects & Portfolio */}
-      <RecentPortfolioSection />
-
-      {/* Featured Live BIM Walkthroughs */}
-      <FeaturedWalkthroughsSection />
-
-      {/* Gallery */}
-      <RecentGalleriesSection />
-
-      {/* 6. Start to Success Stats Bar */}
+      {/* 4. Why Choose Us (6 Metric Counters with Clean Outline Icons) */}
       <StartToSuccess />
 
       {/* 5. How We Work (Navy Blueprint Banner with 4 White Process Cards) */}

@@ -30,80 +30,93 @@ export interface NavItem {
   label: string;
   icon: LucideIcon;
   badge?: string;
+  group?: string;
   children?: NavSubItem[];
 }
 
 export const STUDENT_NAV_ITEMS: NavItem[] = [
-  { id: "overview", label: "Overview", icon: Sparkles },
-  { id: "courses", label: "My Courses", icon: BookOpen },
-  { id: "live", label: "Live Schedule", icon: Video, badge: "Live" },
-  { id: "assignments", label: "Assignments", icon: FileCheck, badge: "1 Due" },
-  { id: "resources", label: "Resources", icon: FolderDown },
-  { id: "payments", label: "Installments", icon: CreditCard, badge: "৳4k Due" },
-  { id: "certificate", label: "Certificate", icon: Award },
-  { id: "reviews", label: "My Reviews", icon: Star },
-  { id: "profile", label: "Settings", icon: User },
+  { id: "overview", label: "Overview", icon: Sparkles, group: "Main" },
+  { id: "courses", label: "My Courses", icon: BookOpen, group: "Learning" },
+  { id: "live", label: "Live Schedule", icon: Video, badge: "Live", group: "Learning" },
+  { id: "assignments", label: "Assignments", icon: FileCheck, badge: "1 Due", group: "Learning" },
+  { id: "resources", label: "Resources", icon: FolderDown, group: "Learning" },
+  { id: "payments", label: "Installments", icon: CreditCard, badge: "৳4k Due", group: "Account" },
+  { id: "certificate", label: "Certificate", icon: Award, group: "Account" },
+  { id: "reviews", label: "My Reviews", icon: Star, group: "Account" },
+  { id: "profile", label: "Settings", icon: User, group: "Account" },
 ];
 
 export const INSTRUCTOR_NAV_ITEMS: NavItem[] = [
-  { id: "overview", label: "Overview", icon: Sparkles },
-  { id: "batches", label: "Batches & Live Studio", icon: Video, badge: "Tonight" },
-  { id: "grading", label: "Review Submissions", icon: FileCheck, badge: "3 Due" },
-  { id: "materials", label: "Course Content Builder", icon: Upload },
-  { id: "resources", label: "Resources", icon: FolderDown },
-  { id: "profile", label: "Trainer Profile", icon: User },
+  { id: "overview", label: "Overview", icon: Sparkles, group: "Main" },
+  { id: "batches", label: "Batches & Live Studio", icon: Video, badge: "Tonight", group: "Teaching" },
+  { id: "grading", label: "Review Submissions", icon: FileCheck, badge: "3 Due", group: "Teaching" },
+  { id: "materials", label: "Course Content Builder", icon: Upload, group: "Teaching" },
+  { id: "resources", label: "Resources", icon: FolderDown, group: "Teaching" },
+  { id: "profile", label: "Trainer Profile", icon: User, group: "Account" },
 ];
 
 export const ADMIN_NAV_ITEMS: NavItem[] = [
-  { id: "overview", label: "Admin Overview", icon: Sparkles },
-  { id: "admissions", label: "Admissions & TrxID", icon: CreditCard, badge: "2 Pending" },
-  {
-    id: "user_management",
-    label: "User Management",
-    icon: Users,
-    badge: "5.2k",
-    children: [
-      { id: "students", label: "Student Directory", badge: "5,240" },
-      { id: "instructors", label: "Trainer & Mentors", badge: "3 Active" },
-    ],
-  },
+  // CORE
+  { id: "overview", label: "Dashboard Overview", icon: Sparkles, group: "Core" },
+  { id: "admissions", label: "Admissions & Payments", icon: CreditCard, badge: "2 Pending", group: "Core" },
+
+  // ACADEMY
   {
     id: "batch_management",
-    label: "Batch Manager",
+    label: "Courses & Batches",
     icon: Layers,
+    group: "Academic",
     children: [
       { id: "categories", label: "Course Categories" },
-      { id: "courses", label: "Course " },
-      { id: "batches", label: "Batch " },
+      { id: "courses", label: "All Courses" },
+      { id: "batches", label: "Active Batches" },
     ],
   },
   {
     id: "course_contents",
-    label: "Course Contents",
+    label: "Course Curriculum",
     icon: BookOpen,
+    group: "Academic",
     children: [
-      { id: "modules", label: "Module ", badge: "New" },
-      { id: "lessons", label: "Lessons " },
+      { id: "modules", label: "Modules" },
+      { id: "lessons", label: "Lessons" },
       { id: "assignments", label: "Assignments" },
       { id: "resources", label: "Resources" },
     ],
   },
-  { id: "certificates", label: "Certificates", icon: Award },
-  { id: "coupons", label: "Coupon Engine", icon: TicketPercent, badge: "Active" },
-  { id: "revenue", label: "Financial Reports", icon: BarChart3 },
+
+  // USERS
   {
-    id: "cms",
-    label: "CMS Management",
-    icon: FolderTree,
+    id: "user_management",
+    label: "User Management",
+    icon: Users,
+    group: "Users",
     children: [
-      { id: "blogs", label: "Blogs" },
-      { id: "galleries", label: "Galleries" },
-      { id: "portfolios", label: "Portfolios" },
-      { id: "walkthroughs", label: "BIM Walkthroughs" },
-      { id: "reviews", label: "Reviews" },
-      { id: "notices", label: "Notices" },
-      { id: "contacts", label: "Contact Messages" },
+      { id: "students", label: "Students Directory" },
+      { id: "instructors", label: "Trainers & Mentors" },
     ],
   },
-  { id: "settings", label: "Settings", icon: User },
+
+  // CMS
+  {
+    id: "cms",
+    label: "CMS & Website",
+    icon: FolderTree,
+    group: "CMS & Media",
+    children: [
+      { id: "walkthroughs", label: "Live BIM Walkthroughs" },
+      { id: "blogs", label: "Blogs & News" },
+      { id: "galleries", label: "Photo Galleries" },
+      { id: "portfolios", label: "Student Portfolios" },
+      { id: "reviews", label: "Student Reviews" },
+      { id: "notices", label: "Notices & Alerts" },
+      { id: "contacts", label: "Contact Inquiries" },
+    ],
+  },
+
+  // FINANCIAL & SETTINGS
+  { id: "certificates", label: "Certificates", icon: Award, group: "Administration" },
+  { id: "coupons", label: "Coupon Engine", icon: TicketPercent, badge: "Active", group: "Administration" },
+  { id: "revenue", label: "Financial Reports", icon: BarChart3, group: "Administration" },
+  { id: "settings", label: "System Settings", icon: User, group: "Administration" },
 ];

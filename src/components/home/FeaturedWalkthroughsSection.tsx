@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Play, Video, ArrowRight, Sparkles } from "lucide-react";
+import { Play, Video, ArrowRight } from "lucide-react";
 import ScrollReveal from "@/components/common/ScrollReveal";
 import VideoModal from "@/components/common/VideoModal";
 import { walkthroughsApi, WalkthroughItem } from "@/services/api";
@@ -31,35 +31,8 @@ function getFallbackThumbnail(videoUrl: string): string {
   if (ytId) {
     return `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
   }
-  return "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80";
+  return "https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=800&q=80";
 }
-
-const DEFAULT_WALKTHROUGHS: WalkthroughItem[] = [
-  {
-    id: "default-1",
-    title: "Commercial Multi-Story Complex — Revit Architecture & Structure Walkthrough",
-    description: "Full building modeling breakdown including parametric curtain walls, structural framing, and level coordination.",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    thumbnail: "https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=800&q=80",
-    isActive: true,
-  },
-  {
-    id: "default-2",
-    title: "Navisworks Clash Detection & Coordination Live Session",
-    description: "Step-by-step resolution of MEP vs. structural collisions, viewpoint reports, and matrix clash tests.",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    thumbnail: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80",
-    isActive: true,
-  },
-  {
-    id: "default-3",
-    title: "Tekla Structures Live Modeling & Steel Detailing Walkthrough",
-    description: "High-LOD connection detailing, rebar scheduling, and automated fabrication drawing creation.",
-    videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    thumbnail: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
-    isActive: true,
-  },
-];
 
 export default function FeaturedWalkthroughsSection() {
   const [walkthroughs, setWalkthroughs] = useState<WalkthroughItem[]>([]);
@@ -70,15 +43,15 @@ export default function FeaturedWalkthroughsSection() {
     const fetchWalkthroughs = async () => {
       try {
         const res = await walkthroughsApi.getAllWalkthroughs();
-        if ((res.statusCode === 200 || res.statusCode === 201) && res.data && res.data.length > 0) {
+        if ((res.statusCode === 200 || res.statusCode === 201) && Array.isArray(res.data)) {
           const activeOnly = res.data.filter((item) => item.isActive !== false);
-          setWalkthroughs(activeOnly.length > 0 ? activeOnly : DEFAULT_WALKTHROUGHS);
+          setWalkthroughs(activeOnly);
         } else {
-          setWalkthroughs(DEFAULT_WALKTHROUGHS);
+          setWalkthroughs([]);
         }
       } catch (err) {
-        console.error("Failed to load walkthroughs", err);
-        setWalkthroughs(DEFAULT_WALKTHROUGHS);
+        console.error("Failed to load walkthroughs from API:", err);
+        setWalkthroughs([]);
       } finally {
         setLoading(false);
       }
@@ -86,6 +59,11 @@ export default function FeaturedWalkthroughsSection() {
 
     fetchWalkthroughs();
   }, []);
+
+  // If still loading or no walkthroughs exist in the API, do not render this section
+  if (loading || walkthroughs.length === 0) {
+    return null;
+  }
 
   const handlePlay = (url: string) => {
     setActiveVideo(formatVideoEmbedUrl(url));
@@ -198,4 +176,3 @@ export default function FeaturedWalkthroughsSection() {
     </section>
   );
 }
-
