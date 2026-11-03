@@ -8,6 +8,7 @@ import { mentorsApi, MentorItem } from "@/services/api/mentorsApi";
 import { uploadApi } from "@/services/api/uploadApi";
 import dynamic from "next/dynamic";
 import "react-quill-new/dist/quill.snow.css";
+import AdminAlertModal, { AlertModalType } from "./AdminAlertModal";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -17,6 +18,21 @@ interface AdminAddCourseViewProps {
 }
 
 export default function AdminAddCourseView({ onBack, onAdd }: AdminAddCourseViewProps) {
+  const [alertModal, setAlertModal] = useState<{
+    isOpen: boolean;
+    type: AlertModalType;
+    title: string;
+    message: string;
+    statusCode?: number | string;
+    confirmText?: string;
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    type: "info",
+    title: "",
+    message: "",
+  });
+
   const [form, setForm] = useState<CreateCoursePayload>({
     title: "",
     slug: "",
@@ -77,11 +93,27 @@ export default function AdminAddCourseView({ onBack, onAdd }: AdminAddCourseView
       if (res.statusCode === 200 || res.statusCode === 201) {
         update("thumbnail", res.data?.url || "");
       } else {
-        alert("Upload failed");
+        setAlertModal({
+          isOpen: true,
+          type: "error",
+          statusCode: res.statusCode || 400,
+          title: "Image Upload Failed",
+          message: res.message || "Failed to upload course thumbnail image. Please try again.",
+          confirmText: "Close",
+          onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+        });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Upload error:", error);
-      alert("Error uploading image");
+      setAlertModal({
+        isOpen: true,
+        type: "error",
+        statusCode: error?.statusCode || 500,
+        title: "Upload Error",
+        message: error?.message || "An error occurred while uploading thumbnail image.",
+        confirmText: "Close",
+        onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+      });
     } finally {
       setUploadingImage(false);
     }
@@ -89,18 +121,65 @@ export default function AdminAddCourseView({ onBack, onAdd }: AdminAddCourseView
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!form.title.trim()) {
+      setAlertModal({
+        isOpen: true,
+        type: "warning",
+        title: "Course Title Required",
+        message: "Please enter a course title before proceeding.",
+        confirmText: "OK",
+        onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const { coursesApi } = await import("@/services/api/coursesApi");
       const res = await coursesApi.createCourse(form as any);
       if (res.statusCode === 201 || res.statusCode === 200) {
-        onAdd(form);
-        onBack();
+        setAlertModal({
+          isOpen: true,
+          type: "success",
+          statusCode: res.statusCode,
+          title: "Course Created Successfully!",
+          message:
+            res.message ||
+            `The course "${form.title}" has been successfully created and saved to the course catalog.`,
+          confirmText: "View Courses",
+          onConfirm: () => {
+            setAlertModal((p) => ({ ...p, isOpen: false }));
+            onAdd(form);
+            onBack();
+          },
+        });
       } else {
-        alert("Failed to create course: " + res.message);
+        const errorMsg = Array.isArray(res.message)
+          ? res.message.join("\n")
+          : res.message || res.error || "Unable to create course.";
+        setAlertModal({
+          isOpen: true,
+          type: "error",
+          statusCode: res.statusCode || 400,
+          title: "Course Creation Failed",
+          message: errorMsg,
+          confirmText: "Dismiss & Review",
+          onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+        });
       }
     } catch (err: any) {
-      alert("Error: " + err.message);
+      setAlertModal({
+        isOpen: true,
+        type: "error",
+        statusCode: err?.statusCode || 500,
+        title: "Submission Error",
+        message:
+          err?.message ||
+          "An unexpected server or network error occurred while submitting the course.",
+        confirmText: "Dismiss",
+        onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+      });
     } finally {
       setLoading(false);
     }
@@ -273,6 +352,18 @@ export default function AdminAddCourseView({ onBack, onAdd }: AdminAddCourseView
           </button>
         </div>
       </form>
+
+      {/* Status Alert Modal */}
+      <AdminAlertModal
+        isOpen={alertModal.isOpen}
+        type={alertModal.type}
+        title={alertModal.title}
+        message={alertModal.message}
+        statusCode={alertModal.statusCode}
+        confirmText={alertModal.confirmText}
+        onClose={() => setAlertModal((p) => ({ ...p, isOpen: false }))}
+        onConfirm={alertModal.onConfirm}
+      />
     </div>
   );
 }
