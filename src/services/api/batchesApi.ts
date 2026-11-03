@@ -15,7 +15,7 @@ export interface BatchItem {
   enrolled_count?: number;
   status?: "upcoming" | "ongoing" | "completed" | "cancelled";
   mode?: "online" | "offline" | "hybrid";
-  class_type?: "live" | "recorded" | "mixed";
+  class_type?: "live" | "recorded" | "mixed" | "self_paced";
   timezone?: string;
   price?: number;
   discount_price?: number;

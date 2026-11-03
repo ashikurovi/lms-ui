@@ -236,7 +236,8 @@ export default function AdminEditBatchModal({
                 >
                   <option value="live">Live Zoom</option>
                   <option value="recorded">Pre-recorded</option>
-                  <option value="mixed">Mixed</option>
+                  <option value="mixed">Mixed (Live + Recorded)</option>
+                  <option value="self_paced">Self Paced</option>
                 </select>
               </div>
               <div>

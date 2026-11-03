@@ -275,7 +275,8 @@ export default function AdminAddBatchView({
               <select value={form.class_type} onChange={(e) => update("class_type", e.target.value)} className="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 focus:border-[#0077b6] focus:outline-none">
                 <option value="live">Live</option>
                 <option value="recorded">Recorded</option>
-                <option value="mixed">Mixed</option>
+                <option value="mixed">Mixed (Live + Recorded)</option>
+                <option value="self_paced">Self Paced</option>
               </select>
             </div>
           </div>
