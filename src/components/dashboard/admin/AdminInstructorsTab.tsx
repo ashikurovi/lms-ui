@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { UserCheck, Search, Plus, Phone, Mail, ChevronLeft, ChevronRight, Eye, RotateCcw, X, ShieldCheck, ShieldAlert, Award, Ban, Trash2 } from "lucide-react";
+import { UserCheck, Search, Plus, Phone, Mail, ChevronLeft, ChevronRight, Eye, Edit2, RotateCcw, X, ShieldCheck, ShieldAlert, Award, Ban, Trash2 } from "lucide-react";
 import AdminAddInstructorView from "./AdminAddInstructorView";
 import AdminInstructorDetails from "./AdminInstructorDetails";
 import AdminUserStatusModal from "./AdminUserStatusModal";
 import AdminDeleteConfirmModal from "./AdminDeleteConfirmModal";
+import AdminEditInstructorModal from "./AdminEditInstructorModal";
 import { mentorsApi, MentorItem } from "@/services/api/mentorsApi";
 
 export interface InstructorRecord {
@@ -26,6 +27,7 @@ export default function AdminInstructorsTab() {
   const [selectedSpecialty, setSelectedSpecialty] = useState("all");
   const [isAddingInstructor, setIsAddingInstructor] = useState(false);
   const [selectedInstructor, setSelectedInstructor] = useState<any | null>(null);
+  const [editingInstructor, setEditingInstructor] = useState<MentorItem | null>(null);
   const [banningInstructor, setBanningInstructor] = useState<MentorItem | null>(null);
   const [deletingInstructor, setDeletingInstructor] = useState<MentorItem | null>(null);
   
@@ -342,6 +344,13 @@ export default function AdminInstructorsTab() {
                       >
                         <Eye className="w-4 h-4" />
                       </button>
+                      <button 
+                        onClick={() => setEditingInstructor(ins.rawData)} 
+                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
+                        title="Edit Trainer Details"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
                       <button
                         onClick={() => setBanningInstructor(ins.rawData)}
                         className={`p-2 rounded-lg transition-colors cursor-pointer ${
@@ -402,6 +411,14 @@ export default function AdminInstructorsTab() {
         isCurrentlyBanned={!!banningInstructor?.user?.isBanned}
         onClose={() => setBanningInstructor(null)}
         onConfirm={handleToggleBanInstructor}
+      />
+
+      {/* Edit Instructor Modal */}
+      <AdminEditInstructorModal
+        isOpen={!!editingInstructor}
+        instructor={editingInstructor}
+        onClose={() => setEditingInstructor(null)}
+        onSuccess={() => loadMentors(page)}
       />
 
       {/* Delete Confirmation Modal */}

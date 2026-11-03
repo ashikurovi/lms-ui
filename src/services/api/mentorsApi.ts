@@ -35,6 +35,8 @@ export interface PaginatedMentors {
 
 export interface CreateMentorPayload {
   userId?: string;
+  name?: string;
+  phone?: string;
   designation: string;
   subject: string;
   bio?: string;
