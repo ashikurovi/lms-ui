@@ -23,6 +23,7 @@ import { CreateBatchPayload } from "@/services/api/batchesApi";
 import AdminBlogsTab from "./AdminBlogsTab";
 import AdminGalleriesTab from "./AdminGalleriesTab";
 import AdminPortfoliosTab from "./AdminPortfoliosTab";
+import AdminWalkthroughsTab from "./AdminWalkthroughsTab";
 import AdminReviewsTab from "./AdminReviewsTab";
 import AdminNoticesTab from "./AdminNoticesTab";
 import AdminContactsTab from "./AdminContactsTab";
@@ -122,6 +123,7 @@ export default function AdminDashboardView({ adminTab, setAdminTab }: { adminTab
       {adminTab === "blogs" && <AdminBlogsTab />}
       {adminTab === "galleries" && <AdminGalleriesTab />}
       {adminTab === "portfolios" && <AdminPortfoliosTab />}
+      {adminTab === "walkthroughs" && <AdminWalkthroughsTab />}
       {adminTab === "reviews" && <AdminReviewsTab />}
       {adminTab === "notices" && <AdminNoticesTab />}
       {adminTab === "contacts" && <AdminContactsTab />}

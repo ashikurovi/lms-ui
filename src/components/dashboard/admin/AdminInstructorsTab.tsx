@@ -72,18 +72,34 @@ export default function AdminInstructorsTab() {
   const handleToggleBanInstructor = async () => {
     if (!banningInstructor) return;
     const isBanned = !!banningInstructor.user?.isBanned;
-    if (isBanned) {
-      await mentorsApi.unbanMentor(banningInstructor.id);
-    } else {
-      await mentorsApi.banMentor(banningInstructor.id);
+    try {
+      if (isBanned) {
+        await mentorsApi.unbanMentor(banningInstructor.id);
+      } else {
+        await mentorsApi.banMentor(banningInstructor.id);
+      }
+      setBanningInstructor(null);
+      await loadMentors(page);
+    } catch (err) {
+      console.error("Failed to toggle ban status", err);
+      alert("Failed to update status");
     }
-    await loadMentors(page);
   };
 
   const handleDeleteInstructor = async () => {
     if (!deletingInstructor) return;
-    await mentorsApi.deleteMentor(deletingInstructor.id);
-    await loadMentors(page);
+    try {
+      const res = await mentorsApi.deleteMentor(deletingInstructor.id);
+      if (res.statusCode === 200 || res.statusCode === 201) {
+        setDeletingInstructor(null);
+        await loadMentors(page);
+      } else {
+        alert("Failed to delete instructor: " + (res.message || "Unknown error"));
+      }
+    } catch (err) {
+      console.error("Failed to delete instructor", err);
+      alert("Failed to delete instructor");
+    }
   };
 
   // Compute unique specialties list

@@ -162,6 +162,7 @@ export type AdminDashboardTab =
   | "blogs"
   | "galleries"
   | "portfolios"
+  | "walkthroughs"
   | "reviews"
   | "notices"
   | "contacts";

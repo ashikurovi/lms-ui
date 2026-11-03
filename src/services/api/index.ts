@@ -24,3 +24,4 @@ export * from "./blogsApi";
 export * from "./portfoliosApi";
 export * from "./galleriesApi";
 export * from "./noticesApi";
+export * from "./walkthroughsApi";

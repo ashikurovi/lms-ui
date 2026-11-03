@@ -99,6 +99,7 @@ export const ADMIN_NAV_ITEMS: NavItem[] = [
       { id: "blogs", label: "Blogs" },
       { id: "galleries", label: "Galleries" },
       { id: "portfolios", label: "Portfolios" },
+      { id: "walkthroughs", label: "BIM Walkthroughs" },
       { id: "reviews", label: "Reviews" },
       { id: "notices", label: "Notices" },
       { id: "contacts", label: "Contact Messages" },
