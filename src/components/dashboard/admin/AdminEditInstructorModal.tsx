@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X, Save, Upload, User, Briefcase, Phone, Mail, Award, Loader2, Image as ImageIcon } from "lucide-react";
+import { X, Save, Upload, User, Briefcase, Phone, Mail, Award, Loader2, Image as ImageIcon, Camera, Trash2 } from "lucide-react";
 import { useIsMounted } from "@/hooks/useIsMounted";
 import { mentorsApi, MentorItem } from "@/services/api/mentorsApi";
 import { uploadApi } from "@/services/api/uploadApi";
@@ -259,9 +259,9 @@ export default function AdminEditInstructorModal({
                 />
               </div>
 
-              <div>
+              <div className="sm:col-span-2">
                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Experience
+                  Years of Experience
                 </label>
                 <input
                   type="text"
@@ -272,49 +272,59 @@ export default function AdminEditInstructorModal({
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Profile Photo URL
+              {/* Profile Photo File Upload */}
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-bold text-slate-700 mb-2">
+                  Profile Photo (File Upload)
                 </label>
-                <div className="flex gap-2 items-center">
-                  <input
-                    type="text"
-                    value={profileImage}
-                    onChange={(e) => setProfileImage(e.target.value)}
-                    className="flex-1 px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-900 focus:border-[#0077b6] focus:outline-none"
-                    placeholder="URL or upload below"
-                  />
-                  {profileImage && (
+                <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+                  {/* Photo Preview */}
+                  <div className="relative group shrink-0">
                     <img
-                      src={profileImage}
-                      alt="Avatar"
-                      className="w-9 h-9 rounded-xl object-cover border border-slate-200 shrink-0"
+                      src={profileImage || "/trainer-avatar.png"}
+                      alt={name || "Trainer Avatar"}
+                      className="w-20 h-20 rounded-2xl object-cover border-2 border-sky-100 shadow-xs bg-slate-100"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = "/trainer-avatar.png";
                       }}
                     />
-                  )}
-                </div>
-              </div>
+                    {uploadingImage && (
+                      <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-2xs rounded-2xl flex items-center justify-center">
+                        <Loader2 className="w-6 h-6 text-white animate-spin" />
+                      </div>
+                    )}
+                  </div>
 
-              {/* Photo File Upload */}
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Upload Profile Avatar
-                </label>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    disabled={uploadingImage}
-                    className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-700 bg-white file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-50 file:text-[#0077b6] hover:file:bg-sky-100 cursor-pointer"
-                  />
-                  {uploadingImage && (
-                    <span className="text-xs text-[#0077b6] font-bold flex items-center gap-1 shrink-0">
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" /> Uploading...
-                    </span>
-                  )}
+                  {/* File Input Controls */}
+                  <div className="flex-1 w-full space-y-2 text-center sm:text-left">
+                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+                      <label className="inline-flex items-center gap-2 px-4 py-2.5 bg-sky-50 hover:bg-sky-100 text-[#0077b6] font-bold text-xs sm:text-sm rounded-xl cursor-pointer border border-sky-200 transition-all shadow-2xs">
+                        <Camera className="w-4 h-4" />
+                        <span>{uploadingImage ? "Uploading Photo..." : "Choose Profile Photo File"}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleImageUpload}
+                          disabled={uploadingImage}
+                        />
+                      </label>
+
+                      {profileImage && (
+                        <button
+                          type="button"
+                          onClick={() => setProfileImage("")}
+                          className="inline-flex items-center gap-1.5 px-3 py-2 text-rose-600 hover:bg-rose-50 text-xs font-bold rounded-xl transition-colors cursor-pointer border border-rose-200"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Remove Photo</span>
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      PNG, JPG, or WEBP image file from your device. Automatically uploads and saves with trainer profile.
+                    </p>
+                  </div>
                 </div>
               </div>
 

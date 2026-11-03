@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { UserCheck, ArrowLeft, ArrowRight, UserPlus, BookOpen } from "lucide-react";
+import { UserCheck, ArrowLeft, ArrowRight, UserPlus, BookOpen, Camera, Trash2, Loader2 } from "lucide-react";
 import { InstructorRecord } from "./AdminInstructorsTab";
 
 const INITIAL_FORM = {
@@ -15,6 +15,7 @@ const INITIAL_FORM = {
   subject: "",
   experience: "",
   bio: "",
+  profileImage: "",
   skills: "",
   expertise: "",
   facebook: "",
@@ -33,10 +34,32 @@ export default function AdminAddInstructorView({
   const [form, setForm] = useState(INITIAL_FORM);
   const [step, setStep] = useState<1 | 2>(1);
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [error, setError] = useState("");
   const [createdUserId, setCreatedUserId] = useState<string | null>(null);
 
   const update = (k: string, v: string) => setForm((p) => ({ ...p, [k]: v }));
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const { uploadApi } = await import("@/services/api/uploadApi");
+      const res = await uploadApi.uploadFile(file);
+      if ((res.statusCode === 200 || res.statusCode === 201) && res.data?.url) {
+        update("profileImage", res.data.url);
+      } else {
+        alert("Image upload failed: " + (res.message || "Unknown error"));
+      }
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("Error uploading image");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const handleNext = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -91,6 +114,7 @@ export default function AdminAddInstructorView({
         subject: form.subject.trim(),
         experience: form.experience.trim(),
         bio: form.bio.trim(),
+        profileImage: form.profileImage.trim() || undefined,
         skills: skillsArray.length > 0 ? skillsArray : undefined,
         expertise: expertiseArray.length > 0 ? expertiseArray : undefined,
         facebook: form.facebook.trim(),
@@ -194,6 +218,60 @@ export default function AdminAddInstructorView({
               <div>
                 <label className="font-bold text-slate-700 block mb-1.5 text-sm">Years of Experience</label>
                 <input type="text" placeholder="e.g. 5+ Years" value={form.experience} onChange={(e) => update("experience", e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-[#0077b6] focus:outline-none" />
+              </div>
+
+              {/* Profile Photo File Upload */}
+              <div className="sm:col-span-2">
+                <label className="font-bold text-slate-700 block mb-2 text-sm">Profile Photo</label>
+                <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+                  {/* Photo Preview */}
+                  <div className="relative group shrink-0">
+                    <img
+                      src={form.profileImage || "/trainer-avatar.png"}
+                      alt="Trainer Avatar Preview"
+                      className="w-18 h-18 rounded-2xl object-cover border-2 border-sky-100 shadow-xs bg-slate-100"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/trainer-avatar.png";
+                      }}
+                    />
+                    {uploadingImage && (
+                      <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-2xs rounded-2xl flex items-center justify-center">
+                        <Loader2 className="w-5 h-5 text-white animate-spin" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* File Input Controls */}
+                  <div className="flex-1 w-full space-y-2 text-center sm:text-left">
+                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3">
+                      <label className="inline-flex items-center gap-2 px-4 py-2 bg-sky-50 hover:bg-sky-100 text-[#0077b6] font-bold text-xs sm:text-sm rounded-xl cursor-pointer border border-sky-200 transition-all shadow-2xs">
+                        <Camera className="w-4 h-4" />
+                        <span>{uploadingImage ? "Uploading Photo..." : "Upload Profile Photo File"}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleImageUpload}
+                          disabled={uploadingImage}
+                        />
+                      </label>
+
+                      {form.profileImage && (
+                        <button
+                          type="button"
+                          onClick={() => update("profileImage", "")}
+                          className="inline-flex items-center gap-1.5 px-3 py-2 text-rose-600 hover:bg-rose-50 text-xs font-bold rounded-xl transition-colors cursor-pointer border border-rose-200"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Remove Photo</span>
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      Select JPG, PNG, or WEBP image file from your device.
+                    </p>
+                  </div>
+                </div>
               </div>
               <div className="sm:col-span-2">
                 <label className="font-bold text-slate-700 block mb-1.5 text-sm">Bio</label>

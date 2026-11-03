@@ -139,45 +139,74 @@ export default function AdminAddCourseView({ onBack, onAdd }: AdminAddCourseView
       const { coursesApi } = await import("@/services/api/coursesApi");
       const res = await coursesApi.createCourse(form as any);
       if (res.statusCode === 201 || res.statusCode === 200) {
+        const savedSlug = res.data?.slug || form.slug;
+        const wasAutoIncremented = savedSlug !== form.slug;
+
         setAlertModal({
           isOpen: true,
           type: "success",
           statusCode: res.statusCode,
           title: "Course Created Successfully!",
-          message:
-            res.message ||
-            `The course "${form.title}" has been successfully created and saved to the course catalog.`,
+          message: wasAutoIncremented
+            ? `Course "${form.title}" created successfully! The slug "${form.slug}" was already taken, so it was automatically made unique as "${savedSlug}".`
+            : res.message ||
+              `The course "${form.title}" has been successfully created and saved to the course catalog.`,
           confirmText: "View Courses",
           onConfirm: () => {
             setAlertModal((p) => ({ ...p, isOpen: false }));
-            onAdd(form);
+            onAdd({ ...form, slug: savedSlug });
             onBack();
           },
         });
       } else {
-        const errorMsg = Array.isArray(res.message)
+        const rawMsg = Array.isArray(res.message)
           ? res.message.join("\n")
           : res.message || res.error || "Unable to create course.";
+
+        const isDuplicateSlug =
+          res.statusCode === 409 ||
+          rawMsg.toLowerCase().includes("slug") ||
+          rawMsg.toLowerCase().includes("already taken") ||
+          rawMsg.toLowerCase().includes("already exists") ||
+          rawMsg.toLowerCase().includes("duplicate key") ||
+          rawMsg.toLowerCase().includes("courses_slug_key");
+
         setAlertModal({
           isOpen: true,
-          type: "error",
-          statusCode: res.statusCode || 400,
-          title: "Course Creation Failed",
-          message: errorMsg,
-          confirmText: "Dismiss & Review",
+          type: isDuplicateSlug ? "warning" : "error",
+          statusCode: res.statusCode || (isDuplicateSlug ? 409 : 400),
+          title: isDuplicateSlug ? "Duplicate Course Slug" : "Course Creation Failed",
+          message: isDuplicateSlug
+            ? (rawMsg.toLowerCase().includes("already taken") || rawMsg.toLowerCase().includes("already exists")
+                ? rawMsg
+                : `The course slug "${form.slug}" is already in use by another course. Please enter a different custom slug or change the course title.`)
+            : rawMsg,
+          confirmText: isDuplicateSlug ? "Change Slug & Retry" : "Dismiss & Review",
           onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
         });
       }
     } catch (err: any) {
+      const errMsg = err?.message || "";
+      const isDuplicateSlug =
+        err?.statusCode === 409 ||
+        errMsg.toLowerCase().includes("slug") ||
+        errMsg.toLowerCase().includes("already taken") ||
+        errMsg.toLowerCase().includes("already exists") ||
+        errMsg.toLowerCase().includes("duplicate key") ||
+        errMsg.toLowerCase().includes("courses_slug_key");
+
       setAlertModal({
         isOpen: true,
-        type: "error",
-        statusCode: err?.statusCode || 500,
-        title: "Submission Error",
-        message:
-          err?.message ||
-          "An unexpected server or network error occurred while submitting the course.",
-        confirmText: "Dismiss",
+        type: isDuplicateSlug ? "warning" : "error",
+        statusCode: err?.statusCode || (isDuplicateSlug ? 409 : 500),
+        title: isDuplicateSlug ? "Duplicate Course Slug" : "Submission Error",
+        message: isDuplicateSlug
+          ? (errMsg.toLowerCase().includes("already taken") || errMsg.toLowerCase().includes("already exists")
+              ? errMsg
+              : `The course slug "${form.slug}" is already in use by another course. Please change the course slug or title to make it unique.`)
+          : errMsg ||
+            "An unexpected server or network error occurred while submitting the course.",
+        confirmText: isDuplicateSlug ? "Change Slug & Retry" : "Dismiss",
         onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
       });
     } finally {
@@ -211,6 +240,7 @@ export default function AdminAddCourseView({ onBack, onAdd }: AdminAddCourseView
             <div>
               <label className="font-bold text-slate-700 block mb-1.5 text-sm">Slug *</label>
               <input type="text" required placeholder="e.g. complete-full-stack..." value={form.slug} onChange={(e) => update("slug", e.target.value)} className="w-full px-4 py-2.5 rounded-xl bg-white border border-slate-200 focus:border-[#0077b6] focus:outline-none" />
+              <p className="text-[11px] text-slate-400 mt-1">Unique URL identifier (must be unique for each course)</p>
             </div>
             <div>
               <label className="font-bold text-slate-700 block mb-1.5 text-sm">Category</label>

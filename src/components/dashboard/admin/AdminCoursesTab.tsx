@@ -53,11 +53,14 @@ export default function AdminCoursesTab() {
   };
 
   const handleUpdateCourse = async (id: string, payload: Partial<CreateCoursePayload>) => {
-    await coursesApi.updateCourse(id, payload);
+    const res = await coursesApi.updateCourse(id, payload);
+    if (res.statusCode >= 400) {
+      throw new Error(res.message || res.error || "Failed to update course");
+    }
     fetchCourses();
     if (selectedCourse?.id === id) {
-      const res = await coursesApi.getCourseById(id);
-      if (res.data) setSelectedCourse(res.data);
+      const detailRes = await coursesApi.getCourseById(id);
+      if (detailRes.data) setSelectedCourse(detailRes.data);
     }
   };
 
