@@ -116,7 +116,6 @@ export default function AdminLessonsTab() {
   };
 
   const handleAddLesson = async (payload: CreateLessonPayload) => {
-    await lessonsApi.createLesson(payload);
     fetchLessons();
   };
 

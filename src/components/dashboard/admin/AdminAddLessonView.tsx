@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { PlayCircle, ArrowLeft } from "lucide-react";
-import { CreateLessonPayload } from "@/services/api/lessonsApi";
+import { lessonsApi, CreateLessonPayload } from "@/services/api/lessonsApi";
 import { modulesApi, CourseModuleItem } from "@/services/api/modulesApi";
+import AdminAlertModal, { AlertModalType } from "./AdminAlertModal";
 
 interface AdminAddLessonViewProps {
   onBack: () => void;
@@ -26,6 +27,20 @@ export default function AdminAddLessonView({ onBack, onAdd }: AdminAddLessonView
     status: "published",
   });
   const [loading, setLoading] = useState(false);
+  const [alertModal, setAlertModal] = useState<{
+    isOpen: boolean;
+    type: AlertModalType;
+    statusCode?: number;
+    title: string;
+    message: string;
+    confirmText?: string;
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    type: "info",
+    title: "",
+    message: "",
+  });
 
   useEffect(() => {
     modulesApi.getAllModules({ limit: 100 }).then((res) => {
@@ -118,10 +133,52 @@ export default function AdminAddLessonView({ onBack, onAdd }: AdminAddLessonView
     e.preventDefault();
     setLoading(true);
     try {
-      await onAdd(form);
-      onBack();
-    } catch (err) {
-      console.error(err);
+      const res = await lessonsApi.createLesson(form);
+      if (res.statusCode === 201 || res.statusCode === 200) {
+        const savedSlug = res.data?.slug || form.slug;
+        const wasAutoIncremented = Boolean(form.slug && savedSlug !== form.slug);
+
+        setAlertModal({
+          isOpen: true,
+          type: "success",
+          statusCode: res.statusCode,
+          title: "Lesson Created Successfully!",
+          message: wasAutoIncremented
+            ? `Lesson "${form.title}" created successfully! The slug "${form.slug}" was already taken, so it was automatically made unique as "${savedSlug}".`
+            : res.message ||
+              `The lesson "${form.title}" (${savedSlug}) has been successfully created.`,
+          confirmText: "View Lessons",
+          onConfirm: () => {
+            setAlertModal((p) => ({ ...p, isOpen: false }));
+            onAdd({ ...form, slug: savedSlug });
+            onBack();
+          },
+        });
+      } else {
+        const rawMsg = Array.isArray(res.message)
+          ? res.message.join("\n")
+          : res.message || res.error || "Unable to create lesson.";
+
+        setAlertModal({
+          isOpen: true,
+          type: "error",
+          statusCode: res.statusCode || 400,
+          title: "Lesson Creation Failed",
+          message: rawMsg,
+          confirmText: "Dismiss & Review",
+          onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+        });
+      }
+    } catch (err: any) {
+      setAlertModal({
+        isOpen: true,
+        type: "error",
+        statusCode: 500,
+        title: "Unexpected Error",
+        message: err?.message || "An unexpected error occurred while saving the lesson.",
+        confirmText: "Dismiss",
+        onConfirm: () => setAlertModal((p) => ({ ...p, isOpen: false })),
+      });
     } finally {
       setLoading(false);
     }
@@ -239,6 +296,17 @@ export default function AdminAddLessonView({ onBack, onAdd }: AdminAddLessonView
           </button>
         </div>
       </form>
+
+      <AdminAlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => setAlertModal((p) => ({ ...p, isOpen: false }))}
+        type={alertModal.type}
+        statusCode={alertModal.statusCode}
+        title={alertModal.title}
+        message={alertModal.message}
+        confirmText={alertModal.confirmText}
+        onConfirm={alertModal.onConfirm || (() => setAlertModal((p) => ({ ...p, isOpen: false })))}
+      />
     </div>
   );
 }
